@@ -1,5 +1,6 @@
 package de.nulide.shiftcal;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -50,12 +51,15 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     private static FloatingActionButton fabSettings;
     private static FloatingActionsMenu fabMenu;
 
+    public static Context con;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        con = this;
 
         fabMenu = findViewById(R.id.fab_menu);
         fabMenu.setOnFloatingActionsMenuUpdateListener(this);
@@ -161,7 +165,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
             }
         }
         dialog.cancel();
-        CalendarIO.writeShiftVal(getFilesDir(), sc);
+        CalendarIO.writeShiftVal(getFilesDir(), this, sc);
         updateCalendar();
         updateTextView();
     }

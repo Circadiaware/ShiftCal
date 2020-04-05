@@ -1,7 +1,5 @@
 package de.nulide.shiftcal;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -25,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     private ArrayAdapter<String> listAdapter;
     private ArrayList<String> settings;
 
+    final String SET_ALARM = "ShiftAlarm";
     final String SET_EXP_CAL = "Export Calendar";
     final String SET_IMP_CAL = "Import Calendar";
     final String SET_TPP = "Third-Party-Projects";
@@ -44,6 +45,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 settings);
         settingsList.setAdapter(listAdapter);
         settingsList.setOnItemClickListener(this);
+        settings.add(SET_ALARM);
         settings.add(SET_EXP_CAL);
         settings.add(SET_IMP_CAL);
         settings.add(SET_TPP);
@@ -54,6 +56,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Intent intent = null;
         switch(settings.get(i)){
+
+            case SET_ALARM:
+                intent = new Intent(this, AlarmActivity.class);
+                startActivity(intent);
+                break;
 
             case SET_EXP_CAL:
                 intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -87,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 uri = resultData.getData();
                 try {
                     InputStream inputStream = getContentResolver().openInputStream(uri);
-                    CalendarIO.importShiftCal(getFilesDir(), inputStream);
+                    CalendarIO.importShiftCal(getFilesDir(), this, inputStream);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

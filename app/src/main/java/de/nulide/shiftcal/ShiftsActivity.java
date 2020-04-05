@@ -1,7 +1,6 @@
 package de.nulide.shiftcal;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -87,7 +86,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
         } else if (item.getTitle() == "Delete") {
             sc.deleteWorkDaysWithShift(sc.getShiftByIndex(index).getId());
             sc.deleteShiftByIndex(index);
-            CalendarIO.writeShiftVal(getFilesDir(), sc);
+            CalendarIO.writeShiftVal(getFilesDir(), this, sc);
             updateShifts();
         } else {
             return false;

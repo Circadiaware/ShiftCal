@@ -6,6 +6,5 @@
     <color name="btnColor">#97be0e</color>
     <color name="btnColorPressed">#72900d</color>
     <color name="fabLabelColor">#9797be0e</color>
-    <color name="transparent">#00000000</color>
 
 </resources>

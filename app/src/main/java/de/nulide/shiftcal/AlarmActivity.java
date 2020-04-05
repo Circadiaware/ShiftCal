@@ -1,0 +1,121 @@
+package de.nulide.shiftcal;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.object.Settings;
+import de.nulide.shiftcal.tools.Alarm;
+
+public class AlarmActivity extends AppCompatActivity implements OnClickListener, TextWatcher {
+
+    private Switch switchAlarm;
+    private EditText etMinutesAlarm;
+    private Button btnTone;
+    private Settings settings;
+    private Alarm alarm;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_alarm);
+        settings = SettingsIO.readSettings(getFilesDir());
+        alarm = new Alarm(getFilesDir());
+
+        switchAlarm = findViewById(R.id.switchAlarm);
+        switchAlarm.setOnClickListener(this);
+
+        etMinutesAlarm = findViewById(R.id.editTextAlarmMinutes);
+        etMinutesAlarm.addTextChangedListener(this);
+
+        btnTone = findViewById(R.id.btnAlarmSound);
+        btnTone.setOnClickListener(this);
+
+        if (settings.isAvailable(Settings.SET_ALARM_ON_OFF)) {
+            if (new Boolean(settings.getSetting(Settings.SET_ALARM_ON_OFF))) {
+                switchAlarm.setChecked(true);
+                etMinutesAlarm.setEnabled(true);
+                btnTone.setEnabled(true);
+                if (settings.isAvailable(Settings.SET_ALARM_MINUTES)) {
+                    etMinutesAlarm.setText(settings.getSetting(Settings.SET_ALARM_MINUTES));
+                }
+                if (settings.isAvailable(Settings.SET_ALARM_TONE)) {
+                    Ringtone tone = RingtoneManager.getRingtone(this, Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE)));
+                    btnTone.setText(tone.getTitle(this));
+                } else {
+                    Uri uri = RingtoneManager.getActualDefaultRingtoneUri(this, 0);
+                    Ringtone tone = RingtoneManager.getRingtone(this, uri);
+                    settings.setSetting(Settings.SET_ALARM_TONE, uri.toString());
+                    SettingsIO.writeSettings(getFilesDir(), this, settings);
+                    btnTone.setText(tone.getTitle(this));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == switchAlarm) {
+            if (switchAlarm.isChecked()) {
+                etMinutesAlarm.setEnabled(true);
+                btnTone.setEnabled(true);
+                settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(true).toString());
+                settings.setSetting(Settings.SET_ALARM_MINUTES, etMinutesAlarm.getText().toString());
+                alarm.setAlarm(this);
+            } else {
+                etMinutesAlarm.setEnabled(false);
+                btnTone.setEnabled(false);
+                settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(false).toString());
+                alarm.removeAll(this);
+            }
+            SettingsIO.writeSettings(getFilesDir(), this, settings);
+        } else if (v == btnTone) {
+            Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm");
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE)));
+            this.startActivityForResult(intent, 5);
+        }
+
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        settings.setSetting(Settings.SET_ALARM_MINUTES, etMinutesAlarm.getText().toString());
+        SettingsIO.writeSettings(getFilesDir(), this, settings);
+        alarm.setAlarm(this);
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+        if (resultCode == Activity.RESULT_OK && requestCode == 5) {
+            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            settings.setSetting(Settings.SET_ALARM_TONE, uri.toString());
+            SettingsIO.writeSettings(getFilesDir(), this, settings);
+            Ringtone tone = RingtoneManager.getRingtone(this, uri);
+            btnTone.setText(tone.getTitle(this));
+
+        }
+    }
+}

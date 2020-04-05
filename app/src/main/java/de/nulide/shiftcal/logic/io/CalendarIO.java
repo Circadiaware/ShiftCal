@@ -1,5 +1,7 @@
 package de.nulide.shiftcal.logic.io;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +15,7 @@ import java.io.StreamCorruptedException;
 
 import de.nulide.shiftcal.logic.io.object.SerialShiftCalendar;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
+import de.nulide.shiftcal.tools.Alarm;
 
 public class CalendarIO {
 
@@ -33,14 +36,14 @@ public class CalendarIO {
 
     }
 
-    public static void importShiftCal(File dir, InputStream is){
+    public static void importShiftCal(File dir, Context c, InputStream is) {
         ObjectInputStream input;
         try {
             input = new ObjectInputStream(is);
             SerialShiftCalendar readSC = (SerialShiftCalendar) input.readObject();
             input.close();
             ShiftCalendar sc = SerialFactory.convertSerialToShiftCalendar(readSC);
-            writeShiftVal(dir, sc);
+            writeShiftVal(dir, c, sc);
         } catch (StreamCorruptedException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -71,7 +74,8 @@ public class CalendarIO {
         return new ShiftCalendar();
     }
 
-    public static void writeShiftVal(File dir, ShiftCalendar sc) {
+    public static void writeShiftVal(File dir, Context c, ShiftCalendar sc) {
+        Alarm alarm = new Alarm(dir);
         File file = new File(dir, FILE_NAME);
         ObjectOutput out = null;
         try {
@@ -88,5 +92,6 @@ public class CalendarIO {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        alarm.setAlarm(c);
     }
 }

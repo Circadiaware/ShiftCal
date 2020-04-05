@@ -92,7 +92,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
                 } else {
                     sc.addShift(nS);
                 }
-                CalendarIO.writeShiftVal(getFilesDir(), sc);
+                CalendarIO.writeShiftVal(getFilesDir(), this, sc);
                 this.finish();
             } else {
                 Snackbar.make(view, "Error: Not enough Information!", Snackbar.LENGTH_LONG)
