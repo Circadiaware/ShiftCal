@@ -1,10 +1,11 @@
-package de.nulide.shiftcal;
+package de.nulide.shiftcal.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import de.nulide.shiftcal.ExecutedAlarmActivity;
 import de.nulide.shiftcal.tools.Alarm;
 
 public class AlarmReceiver extends BroadcastReceiver {

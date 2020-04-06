@@ -9,7 +9,7 @@ import android.os.Build;
 import java.io.File;
 import java.util.Calendar;
 
-import de.nulide.shiftcal.AlarmReceiver;
+import de.nulide.shiftcal.receiver.AlarmReceiver;
 import de.nulide.shiftcal.logic.io.CalendarIO;
 import de.nulide.shiftcal.logic.io.SettingsIO;
 import de.nulide.shiftcal.logic.object.Settings;
