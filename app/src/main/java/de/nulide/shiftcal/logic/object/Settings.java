@@ -8,6 +8,8 @@ public class Settings {
     public static final String SET_ALARM_ON_OFF = "ALARM";
     public static final String SET_ALARM_MINUTES = "ALARM-Minutes";
     public static final String SET_ALARM_TONE = "ALARM_TONE";
+    public static final String SET_COLOR = "COLOR";
+    public static final String SET_DARK_MODE = "DARK_MODE";
 
 
     private HashMap<String, String> settings;

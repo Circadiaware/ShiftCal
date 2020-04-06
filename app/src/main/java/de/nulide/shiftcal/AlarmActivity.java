@@ -11,16 +11,19 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import de.nulide.shiftcal.logic.io.SettingsIO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.tools.Alarm;
+import de.nulide.shiftcal.tools.ColorHelper;
 
-public class AlarmActivity extends AppCompatActivity implements OnClickListener, TextWatcher {
+public class AlarmActivity extends AppCompatActivity implements OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
     private Switch switchAlarm;
     private EditText etMinutesAlarm;
@@ -32,23 +35,26 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-        settings = SettingsIO.readSettings(getFilesDir());
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        int color = getResources().getColor(R.color.colorPrimary);
+        settings  = SettingsIO.readSettings(getFilesDir());
+        if(settings.isAvailable(Settings.SET_COLOR)){
+            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
+        }
+        ColorHelper.changeActivityColors(this, color);
         alarm = new Alarm(getFilesDir());
 
         switchAlarm = findViewById(R.id.switchAlarm);
-        switchAlarm.setOnClickListener(this);
+        switchAlarm.setOnCheckedChangeListener(this);
 
         etMinutesAlarm = findViewById(R.id.editTextAlarmMinutes);
-        etMinutesAlarm.addTextChangedListener(this);
 
         btnTone = findViewById(R.id.btnAlarmSound);
         btnTone.setOnClickListener(this);
 
         if (settings.isAvailable(Settings.SET_ALARM_ON_OFF)) {
             if (new Boolean(settings.getSetting(Settings.SET_ALARM_ON_OFF))) {
-                switchAlarm.setChecked(true);
-                etMinutesAlarm.setEnabled(true);
-                btnTone.setEnabled(true);
                 if (settings.isAvailable(Settings.SET_ALARM_MINUTES)) {
                     etMinutesAlarm.setText(settings.getSetting(Settings.SET_ALARM_MINUTES));
                 }
@@ -62,27 +68,18 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
                     SettingsIO.writeSettings(getFilesDir(), this, settings);
                     btnTone.setText(tone.getTitle(this));
                 }
+                switchAlarm.setChecked(true);
+                etMinutesAlarm.setEnabled(true);
+                btnTone.setEnabled(true);
             }
         }
+        etMinutesAlarm.addTextChangedListener(this);
+
     }
 
     @Override
     public void onClick(View v) {
-        if (v == switchAlarm) {
-            if (switchAlarm.isChecked()) {
-                etMinutesAlarm.setEnabled(true);
-                btnTone.setEnabled(true);
-                settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(true).toString());
-                settings.setSetting(Settings.SET_ALARM_MINUTES, etMinutesAlarm.getText().toString());
-                alarm.setAlarm(this);
-            } else {
-                etMinutesAlarm.setEnabled(false);
-                btnTone.setEnabled(false);
-                settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(false).toString());
-                alarm.removeAll(this);
-            }
-            SettingsIO.writeSettings(getFilesDir(), this, settings);
-        } else if (v == btnTone) {
+        if (v == btnTone) {
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm");
@@ -116,6 +113,25 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
             Ringtone tone = RingtoneManager.getRingtone(this, uri);
             btnTone.setText(tone.getTitle(this));
 
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (buttonView == switchAlarm) {
+            if (isChecked) {
+                etMinutesAlarm.setEnabled(true);
+                btnTone.setEnabled(true);
+                settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(true).toString());
+                settings.setSetting(Settings.SET_ALARM_MINUTES, etMinutesAlarm.getText().toString());
+                alarm.setAlarm(this);
+            } else {
+                etMinutesAlarm.setEnabled(false);
+                btnTone.setEnabled(false);
+                settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(false).toString());
+                alarm.removeAll(this);
+            }
+            SettingsIO.writeSettings(getFilesDir(), this, settings);
         }
     }
 }

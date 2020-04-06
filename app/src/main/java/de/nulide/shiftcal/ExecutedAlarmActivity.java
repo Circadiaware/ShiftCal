@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,6 +23,7 @@ import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.tools.Alarm;
+import de.nulide.shiftcal.tools.ColorHelper;
 
 public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -43,6 +45,14 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
                 | WindowManager.LayoutParams.FLAG_FULLSCREEN
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_executed_alarm);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        int color = getResources().getColor(R.color.colorPrimary);
+        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        if(settings.isAvailable(Settings.SET_COLOR)){
+            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
+        }
+        ColorHelper.changeActivityColors(this, color);
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.screenBrightness = 1;
         getWindow().setAttributes(params);
@@ -70,9 +80,9 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
         tvShiftA.setText(s.getShort_name());
         tvShiftA.setTextColor(s.getColor());
         btnEnd = findViewById(R.id.btnEndAlarm);
+        btnEnd.setBackgroundColor(color);
         btnEnd.setOnClickListener(this);
 
-        Settings settings = SettingsIO.readSettings(getFilesDir());
         Uri uri = Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE));
         ringtone = RingtoneManager.getRingtone(this, uri);
         ringtone.play();

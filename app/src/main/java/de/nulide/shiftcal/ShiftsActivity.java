@@ -16,8 +16,11 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 import de.nulide.shiftcal.logic.io.CalendarIO;
+import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
+import de.nulide.shiftcal.tools.ColorHelper;
 import de.nulide.shiftcal.ui.ShiftAdapter;
 
 public class ShiftsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -33,11 +36,18 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        int color = getResources().getColor(R.color.colorPrimary);
+        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        if(settings.isAvailable(Settings.SET_COLOR)){
+            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
+        }
+        ColorHelper.changeActivityColors(this, color);
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
+        fab.setColorNormal(color);
+        fab.setColorPressed(ColorHelper.darkenColor(color));
 
         listViewShifts = findViewById(R.id.listViewShifts);
         registerForContextMenu(listViewShifts);

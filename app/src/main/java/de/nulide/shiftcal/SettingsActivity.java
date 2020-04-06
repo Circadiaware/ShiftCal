@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,13 +19,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import de.nulide.shiftcal.logic.io.CalendarIO;
+import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.object.Settings;
+import de.nulide.shiftcal.tools.ColorHelper;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView settingsList;
     private ArrayAdapter<String> listAdapter;
-    private ArrayList<String> settings;
+    private ArrayList<String> settingsL;
 
+    final String SET_THEME = "Theme";
     final String SET_ALARM = "ShiftAlarm";
     final String SET_EXP_CAL = "Export Calendar";
     final String SET_IMP_CAL = "Import Calendar";
@@ -37,25 +42,41 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        int color = getResources().getColor(R.color.colorPrimary);
+        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        if(settings.isAvailable(Settings.SET_COLOR)){
+            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
+        }
+        ColorHelper.changeActivityColors(this, color);
+
 
         settingsList = findViewById(R.id.settingslist);
-        settings = new ArrayList<>();
+        settingsL = new ArrayList<>();
         listAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
-                settings);
+                settingsL);
         settingsList.setAdapter(listAdapter);
         settingsList.setOnItemClickListener(this);
-        settings.add(SET_ALARM);
-        settings.add(SET_EXP_CAL);
-        settings.add(SET_IMP_CAL);
-        settings.add(SET_TPP);
+        settingsL.add(SET_THEME);
+        settingsL.add(SET_ALARM);
+        settingsL.add(SET_EXP_CAL);
+        settingsL.add(SET_IMP_CAL);
+        settingsL.add(SET_TPP);
         listAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Intent intent = null;
-        switch(settings.get(i)){
+        switch(settingsL.get(i)){
+
+            case SET_THEME:
+                intent = new Intent(this, ThemeActivity.class);
+                startActivity(intent);
+                break;
 
             case SET_ALARM:
                 intent = new Intent(this, AlarmActivity.class);

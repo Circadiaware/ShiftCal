@@ -8,12 +8,6 @@
     tools:context=".ShiftCreatorActivity"
     tools:showIn="@layout/activity_shift_creator">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints">
-
         <androidx.gridlayout.widget.GridLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -71,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="1mm"
                 android:layout_weight="1"
-                android:background="#bacc3c"
+                android:background="@color/colorPrimary"
                 android:text="00:00" />
 
             <TextView
@@ -88,22 +82,27 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="1mm"
                 android:layout_weight="1"
-                android:background="#bacc3c"
+                android:background="@color/colorPrimary"
                 android:ems="5"
                 android:text="00:00" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1mm"
+                android:layout_weight="1"
+                android:text="Color:" />
+
+            <Button
+                android:id="@+id/colorPickerBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1mm"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="#" />
+
+
         </androidx.gridlayout.widget.GridLayout>
-
-        <Button
-            android:id="@+id/colorPickerBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="#bacc3c"
-            android:text="Select Color"
-            android:padding="1mm"/>
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

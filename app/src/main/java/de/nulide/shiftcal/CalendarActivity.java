@@ -28,9 +28,12 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import java.util.ArrayList;
 
 import de.nulide.shiftcal.logic.io.CalendarIO;
+import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.WorkDay;
+import de.nulide.shiftcal.tools.ColorHelper;
 import de.nulide.shiftcal.ui.ShiftAdapter;
 import de.nulide.shiftcal.ui.ShiftDayFormatter;
 import de.nulide.shiftcal.ui.ShiftDayViewDecorator;
@@ -61,17 +64,28 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         con = this;
 
+        int color = getResources().getColor(R.color.colorPrimary);
+        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        if(settings.isAvailable(Settings.SET_COLOR)){
+            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
+        }
+        ColorHelper.changeActivityColors(this, color);
+
         fabMenu = findViewById(R.id.fab_menu);
         fabMenu.setOnFloatingActionsMenuUpdateListener(this);
-
         fab = findViewById(R.id.shiftsfab);
+        fab.setColorNormal(color);
+        fab.setColorPressed(ColorHelper.darkenColor(color));
         fab.setOnClickListener(this);
         fabSettings = findViewById(R.id.settingsfab);
+        fabSettings.setColorNormal(color);
+        fabSettings.setColorPressed(ColorHelper.darkenColor(color));
         fabSettings.setOnClickListener(this);
 
         calendar = findViewById(R.id.calendarView);
         calendar.setDateSelected(CalendarDay.today(), true);
         calendar.setOnDateChangedListener(this);
+        calendar.setSelectionColor(color);
         tvName = findViewById(R.id.cTextViewName);
         tvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         tvST = findViewById(R.id.cTextViewST);

@@ -19,7 +19,7 @@
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:mcv_selectionColor="#97be0e"
+            app:mcv_selectionColor="@color/colorPrimary"
             app:mcv_selectionMode="single"
             app:mcv_showOtherDates="none"
             tools:ignore="MissingConstraints">

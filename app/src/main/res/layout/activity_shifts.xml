@@ -29,8 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        fab:fab_colorNormal="@color/btnColor"
-        fab:fab_colorPressed="@color/btnColorPressed"
+        fab:fab_colorNormal="@color/colorPrimary"
+        fab:fab_colorPressed="@color/colorPrimaryDark"
         fab:fab_icon="@drawable/ic_add"
         fab:fab_title="Settings" />
 

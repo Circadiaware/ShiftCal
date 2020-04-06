@@ -6,13 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ShiftsActivity"
-    tools:showIn="@layout/activity_shifts">
+    tools:context=".SettingsActivity"
+    tools:showIn="@layout/activity_settings">
 
     <ListView
-        android:id="@+id/listViewShifts"
+        android:id="@+id/settingslist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="107dp"
-        tools:layout_editor_absoluteY="111dp" />
+        android:layout_height="match_parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

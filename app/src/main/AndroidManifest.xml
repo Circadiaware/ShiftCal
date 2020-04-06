@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.nulide.shiftcal">
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -12,11 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ThemeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ExecutedAlarmActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".AlarmActivity" />
-        <activity android:name=".SettingsActivity" />
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AlarmActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShiftCreatorActivity"
             android:label="@string/title_activity_shift_creator"
@@ -31,11 +39,12 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <receiver android:name="de.nulide.shiftcal.receiver.AlarmReceiver" />
+        <receiver android:name=".receiver.AlarmReceiver" />
         <receiver
             android:name=".receiver.BootReceiver"
             android:directBootAware="true"
@@ -46,7 +55,6 @@
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

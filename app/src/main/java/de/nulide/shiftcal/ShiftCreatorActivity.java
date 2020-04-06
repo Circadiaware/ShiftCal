@@ -20,9 +20,12 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import de.nulide.shiftcal.logic.io.CalendarIO;
+import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.ShiftTime;
+import de.nulide.shiftcal.tools.ColorHelper;
 
 public class ShiftCreatorActivity extends AppCompatActivity implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
 
@@ -48,6 +51,13 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        int color = getResources().getColor(R.color.colorPrimary);
+        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        if(settings.isAvailable(Settings.SET_COLOR)){
+            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
+        }
+        ColorHelper.changeActivityColors(this, color);
+
         Bundle bundle = getIntent().getExtras();
         toEditShift = bundle.getInt("toedit");
 
@@ -58,6 +68,8 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
+        fab.setColorNormal(color);
+        fab.setColorPressed(ColorHelper.darkenColor(color));
         etViewName = findViewById(R.id.scEditTextName);
         etViewSName = findViewById(R.id.scEditTextSName);
         btnStartTime = findViewById(R.id.btnStartTime);
@@ -66,7 +78,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
         btnEndTime.setOnClickListener(this);
         btnCP = findViewById(R.id.colorPickerBtn);
         btnCP.setOnClickListener(this);
-        updateButtonColors(Color.parseColor("#bacc3c"));
+        updateButtonColors(color);
 
         if (toEditShift != -1) {
             etViewName.setText(sc.getShiftById(toEditShift).getName());
@@ -156,6 +168,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
         btnStartTime.setBackgroundColor(color);
         btnEndTime.setBackgroundColor(color);
         btnCP.setBackgroundColor(color);
+        btnCP.setText(String.format("#%06X", (0xFFFFFF & color)));
 
 
         int[] rgb = { Color.red(color), Color.green(color), Color.blue(color) };
