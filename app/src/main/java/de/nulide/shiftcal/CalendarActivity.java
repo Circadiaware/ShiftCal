@@ -37,6 +37,7 @@ import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.WorkDay;
 import de.nulide.shiftcal.tools.ColorHelper;
+import de.nulide.shiftcal.ui.DarkModeDecorator;
 import de.nulide.shiftcal.ui.ShiftAdapter;
 import de.nulide.shiftcal.ui.ShiftDayFormatter;
 import de.nulide.shiftcal.ui.ShiftDayViewDecorator;
@@ -110,6 +111,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     public void updateCalendar() {
         sc = CalendarIO.readShiftCal(getFilesDir());
         calendar.removeDecorators();
+        calendar.addDecorator(new DarkModeDecorator());
         for (int i = 0; i < sc.getShiftsSize(); i++) {
             calendar.addDecorator(new ShiftDayViewDecorator(sc.getShiftByIndex(i), sc));
         }
