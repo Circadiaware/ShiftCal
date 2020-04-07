@@ -74,6 +74,9 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
         ColorHelper.changeActivityColors(this, color);
+        if(settings.isAvailable(Settings.SET_DARK_MODE)){
+            ThemeActivity.setDarkMode(Integer.parseInt(settings.getSetting(Settings.SET_DARK_MODE)));
+        }
 
         btnPopup = findViewById(R.id.btnPopup);
         btnPopup.setOnClickListener(this);
