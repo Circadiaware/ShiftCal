@@ -2,6 +2,7 @@ package de.nulide.shiftcal;
 
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import de.nulide.shiftcal.logic.io.CalendarIO;
@@ -35,7 +36,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
     private ShiftTime stEnd;
     private boolean setStartTime = true;
 
-    private FloatingActionButton fab;
+    private FloatingActionButton fabDoneShift;
     private EditText etViewName;
     private EditText etViewSName;
     private Button btnStartTime;
@@ -66,10 +67,9 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
         stEnd = new ShiftTime(0,0);
 
 
-        fab = findViewById(R.id.fab);
-        fab.setOnClickListener(this);
-        fab.setColorNormal(color);
-        fab.setColorPressed(ColorHelper.darkenColor(color));
+        fabDoneShift = findViewById(R.id.fabDoneShift);
+        fabDoneShift.setOnClickListener(this);
+        fabDoneShift.setBackgroundTintList(ColorStateList.valueOf(color));
         etViewName = findViewById(R.id.scEditTextName);
         etViewSName = findViewById(R.id.scEditTextSName);
         btnStartTime = findViewById(R.id.btnStartTime);
@@ -92,7 +92,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        if (view == fab) {
+        if (view == fabDoneShift) {
             String name = etViewName.getText().toString();
             String sname = etViewSName.getText().toString();
 

@@ -1,6 +1,7 @@
 package de.nulide.shiftcal;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -11,7 +12,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,8 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
 
     static ShiftCalendar sc;
     private ListView listViewShifts;
+
+    private FloatingActionButton fabAddShift;
 
 
     @Override
@@ -44,10 +47,10 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
         ColorHelper.changeActivityColors(this, color);
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(this);
-        fab.setColorNormal(color);
-        fab.setColorPressed(ColorHelper.darkenColor(color));
+        fabAddShift = findViewById(R.id.fabAddShift);
+        fabAddShift.setBackgroundTintList(ColorStateList.valueOf(color));
+        fabAddShift.setOnClickListener(this);
+
 
         listViewShifts = findViewById(R.id.listViewShifts);
         registerForContextMenu(listViewShifts);

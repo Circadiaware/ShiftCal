@@ -1,6 +1,7 @@
 package de.nulide.shiftcal;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -80,7 +81,7 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
         tvShiftA.setText(s.getShort_name());
         tvShiftA.setTextColor(s.getColor());
         btnEnd = findViewById(R.id.btnEndAlarm);
-        btnEnd.setBackgroundColor(color);
+        btnEnd.setBackgroundTintList(ColorStateList.valueOf(color));
         btnEnd.setOnClickListener(this);
 
         Uri uri = Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE));

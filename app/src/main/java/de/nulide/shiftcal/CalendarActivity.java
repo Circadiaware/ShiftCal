@@ -2,16 +2,20 @@ package de.nulide.shiftcal;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Switch;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,8 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
@@ -39,20 +42,21 @@ import de.nulide.shiftcal.ui.ShiftDayFormatter;
 import de.nulide.shiftcal.ui.ShiftDayViewDecorator;
 import de.nulide.shiftcal.ui.TodayDayViewDecorator;
 
-public class CalendarActivity extends AppCompatActivity implements View.OnClickListener, OnDateSelectedListener, AdapterView.OnItemClickListener, FloatingActionsMenu.OnFloatingActionsMenuUpdateListener, View.OnTouchListener {
+public class CalendarActivity extends AppCompatActivity implements View.OnClickListener, OnDateSelectedListener, AdapterView.OnItemClickListener, View.OnTouchListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener {
 
     private static ShiftCalendar sc;
     private static TextView tvName;
     private static TextView tvST;
     private static TextView tvET;
-    private static Switch switchEdit;
     private static FrameLayout fl;
     private static AlertDialog dialog;
+    private static ImageButton btnPopup;
+    private static PopupMenu popup;
+
     private static MaterialCalendarView calendar;
 
-    private static FloatingActionButton fab;
-    private static FloatingActionButton fabSettings;
-    private static FloatingActionsMenu fabMenu;
+    private static FloatingActionButton fabEdit;
+    private static boolean toEdit = false;
 
     public static Context con;
 
@@ -71,16 +75,19 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         }
         ColorHelper.changeActivityColors(this, color);
 
-        fabMenu = findViewById(R.id.fab_menu);
-        fabMenu.setOnFloatingActionsMenuUpdateListener(this);
-        fab = findViewById(R.id.shiftsfab);
-        fab.setColorNormal(color);
-        fab.setColorPressed(ColorHelper.darkenColor(color));
-        fab.setOnClickListener(this);
-        fabSettings = findViewById(R.id.settingsfab);
-        fabSettings.setColorNormal(color);
-        fabSettings.setColorPressed(ColorHelper.darkenColor(color));
-        fabSettings.setOnClickListener(this);
+        btnPopup = findViewById(R.id.btnPopup);
+        btnPopup.setOnClickListener(this);
+        popup = new PopupMenu(this, btnPopup);
+        popup.setOnMenuItemClickListener(this);
+        popup.setOnDismissListener(this);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_calendar, popup.getMenu());
+
+
+        fabEdit = findViewById(R.id.fabEdit);
+        fabEdit.setBackgroundTintList(ColorStateList.valueOf(color));
+        fabEdit.setBackgroundColor(color);
+        fabEdit.setOnClickListener(this);
 
         calendar = findViewById(R.id.calendarView);
         calendar.setDateSelected(CalendarDay.today(), true);
@@ -92,7 +99,6 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         tvET = findViewById(R.id.cTextViewET);
         fl = findViewById(R.id.CalendarTopLayer);
 
-        switchEdit = findViewById(R.id.editSwitch);
 
         updateCalendar();
         updateTextView();
@@ -125,19 +131,25 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        Intent myIntent;
-        if(view == fab) {
-            myIntent = new Intent(this, ShiftsActivity.class);
-            startActivity(myIntent);
-        }else{
-            myIntent = new Intent(this, SettingsActivity.class);
-            startActivity(myIntent);
+        if (view == fabEdit) {
+            if (toEdit) {
+                toEdit = false;
+                fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+            } else {
+                toEdit = true;
+                fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_done));
+            }
+        } else if (view == btnPopup) {
+            fl.setBackgroundColor(Color.argb(200, 255, 255, 255));
+            fl.setOnTouchListener(this);
+            popup.show();
+
         }
     }
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-        if (switchEdit.isChecked()) {
+        if (toEdit) {
             LayoutInflater inflater = getLayoutInflater();
             View dialoglayout = inflater.inflate(R.layout.dialog_shift_selector, null);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -160,8 +172,9 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         super.onResume();
         updateCalendar();
         updateTextView();
-        switchEdit.setChecked(false);
-        fabMenu.collapse();
+        fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+        toEdit = false;
+        popup.dismiss();
     }
 
     @Override
@@ -184,22 +197,32 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         updateTextView();
     }
 
-
-    @Override
-    public void onMenuExpanded() {
-        fl.setBackgroundColor(Color.argb(200, 255, 255, 255));
-        fl.setOnTouchListener(this);
-    }
-
-    @Override
-    public void onMenuCollapsed() {
-        fl.setBackgroundColor(Color.TRANSPARENT);
-        fl.setOnTouchListener(null);
-    }
-
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        fabMenu.collapse();
+        popup.dismiss();
         return true;
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.iSettings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.iShifts:
+                intent = new Intent(this, ShiftsActivity.class);
+                startActivity(intent);
+                return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onDismiss(PopupMenu menu) {
+        fl.setBackgroundColor(Color.TRANSPARENT);
+        fl.setOnTouchListener(null);
     }
 }

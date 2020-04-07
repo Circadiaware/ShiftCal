@@ -32,5 +32,4 @@ dependencies {
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'com.getbase:floatingactionbutton:1.10.1'
 }
