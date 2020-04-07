@@ -58,20 +58,20 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
                 if (settings.isAvailable(Settings.SET_ALARM_MINUTES)) {
                     etMinutesAlarm.setText(settings.getSetting(Settings.SET_ALARM_MINUTES));
                 }
-                if (settings.isAvailable(Settings.SET_ALARM_TONE)) {
-                    Ringtone tone = RingtoneManager.getRingtone(this, Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE)));
-                    btnTone.setText(tone.getTitle(this));
-                } else {
-                    Uri uri = RingtoneManager.getActualDefaultRingtoneUri(this, 0);
-                    Ringtone tone = RingtoneManager.getRingtone(this, uri);
-                    settings.setSetting(Settings.SET_ALARM_TONE, uri.toString());
-                    SettingsIO.writeSettings(getFilesDir(), this, settings);
-                    btnTone.setText(tone.getTitle(this));
-                }
                 switchAlarm.setChecked(true);
                 etMinutesAlarm.setEnabled(true);
                 btnTone.setEnabled(true);
             }
+        }
+        if (settings.isAvailable(Settings.SET_ALARM_TONE)) {
+            Ringtone tone = RingtoneManager.getRingtone(this, Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE)));
+            btnTone.setText(tone.getTitle(this));
+        } else {
+            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            Ringtone tone = RingtoneManager.getRingtone(this, uri);
+            settings.setSetting(Settings.SET_ALARM_TONE, uri.toString());
+            SettingsIO.writeSettings(getFilesDir(), this, settings);
+            btnTone.setText(tone.getTitle(this));
         }
         etMinutesAlarm.addTextChangedListener(this);
 
