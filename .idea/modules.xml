@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Nulide-ShiftCal.iml" filepath="$PROJECT_DIR$/Nulide-ShiftCal.iml" group="ShiftCal" />
       <module fileurl="file://$PROJECT_DIR$/ShiftCal.iml" filepath="$PROJECT_DIR$/ShiftCal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/ShiftCal-app.iml" filepath="$PROJECT_DIR$/app/ShiftCal-app.iml" group="ShiftCal/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

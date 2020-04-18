@@ -5,6 +5,7 @@ Ein FOSS Schichtkalendar.
 Features:
 
 - Erstelle Schichten
+- Konfiguriere Alarme für deine Schichten
 - Gestalte deine Schichten mit unterschiedlichen Farben
 - Siehe deine Schichten im Kalendar
 - Simples Material Design
