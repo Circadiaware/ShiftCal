@@ -99,9 +99,11 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void afterTextChanged(Editable s) {
-        settings.setSetting(Settings.SET_ALARM_MINUTES, etMinutesAlarm.getText().toString());
-        IO.writeSettings(getFilesDir(), this, settings);
-        alarm.setAlarm(this);
+        if(!etMinutesAlarm.getText().toString().isEmpty()) {
+            settings.setSetting(Settings.SET_ALARM_MINUTES, etMinutesAlarm.getText().toString());
+            IO.writeSettings(getFilesDir(), this, settings);
+            alarm.setAlarm(this);
+        }
     }
 
     @Override
