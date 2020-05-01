@@ -98,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 break;
 
             case SET_TPP:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Nulide/ShiftCal/blob/master/ThirdPartyProjects.md"));
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gitlab.com/Nulide/ShiftCal/-/blob/master/ThirdPartyProjects.md"));
                 startActivity(intent);
                 break;
         }
