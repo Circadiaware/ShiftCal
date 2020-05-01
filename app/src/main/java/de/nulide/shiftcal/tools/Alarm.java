@@ -54,6 +54,9 @@ public class Alarm {
                         PendingIntent pi = PendingIntent.getBroadcast(t, i, intent, 0);
                         mgr.cancel(pi);
                     }
+                    if(nearest == null){
+                        return;
+                    }
                     Intent intent = new Intent(t, AlarmReceiver.class);
                     intent.putExtra(EXT_SHIFT, sc.getWdayByIndex(id).getShift());
                     PendingIntent pi = PendingIntent.getBroadcast(t, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
