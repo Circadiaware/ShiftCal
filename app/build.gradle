@@ -32,4 +32,5 @@ dependencies {
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
 }

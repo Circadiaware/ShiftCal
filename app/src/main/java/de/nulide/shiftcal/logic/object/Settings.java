@@ -22,7 +22,6 @@ public class Settings {
         settings = s;
     }
 
-
     public boolean isAvailable(String setting) {
         return settings.containsKey(setting);
     }

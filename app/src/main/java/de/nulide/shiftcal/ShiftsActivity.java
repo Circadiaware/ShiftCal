@@ -16,8 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-import de.nulide.shiftcal.logic.io.CalendarIO;
-import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
@@ -40,7 +39,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
         setSupportActionBar(toolbar);
 
         int color = getResources().getColor(R.color.colorPrimary);
-        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        Settings settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
@@ -61,7 +60,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void updateShifts() {
-        sc = CalendarIO.readShiftCal(getFilesDir());
+        sc = IO.readShiftCal(getFilesDir());
         ShiftAdapter adapter = new ShiftAdapter(this, new ArrayList<Shift>(sc.getShiftList()));
         listViewShifts.setAdapter(adapter);
 
@@ -99,7 +98,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
         } else if (item.getTitle() == "Delete") {
             sc.deleteWorkDaysWithShift(sc.getShiftByIndex(index).getId());
             sc.deleteShiftByIndex(index);
-            CalendarIO.writeShiftVal(getFilesDir(), this, sc);
+            IO.writeShiftCal(getFilesDir(), this, sc);
             updateShifts();
         } else {
             return false;

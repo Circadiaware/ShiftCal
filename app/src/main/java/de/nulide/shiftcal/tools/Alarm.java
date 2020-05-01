@@ -10,8 +10,7 @@ import java.io.File;
 import java.util.Calendar;
 
 import de.nulide.shiftcal.receiver.AlarmReceiver;
-import de.nulide.shiftcal.logic.io.CalendarIO;
-import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.WorkDay;
@@ -27,14 +26,14 @@ public class Alarm {
     }
 
     public void setAlarm(Context t) {
-        settings = SettingsIO.readSettings(f);
+        settings = IO.readSettings(f);
         try {
             if (settings.isAvailable(Settings.SET_ALARM_ON_OFF) &&settings.isAvailable(Settings.SET_ALARM_MINUTES)) {
                 if(new Boolean(settings.getSetting(Settings.SET_ALARM_ON_OFF))) {
                     Calendar today = Calendar.getInstance();
                     Calendar nearest = null;
                     int id = 0;
-                    ShiftCalendar sc = CalendarIO.readShiftCal(f);
+                    ShiftCalendar sc = IO.readShiftCal(f);
                     AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
                     int minutes = Integer.parseInt(settings.getSetting(Settings.SET_ALARM_MINUTES));
                     for (int i = 0; i < sc.getCalendarSize(); i++) {
@@ -79,9 +78,9 @@ public class Alarm {
     }
 
     public void removeAll(Context t) {
-        settings = SettingsIO.readSettings(f);
+        settings = IO.readSettings(f);
         try {
-            ShiftCalendar sc = CalendarIO.readShiftCal(f);
+            ShiftCalendar sc = IO.readShiftCal(f);
             AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
             int minutes = Integer.parseInt(settings.getSetting(Settings.SET_ALARM_MINUTES));
             for (int i = 0; i < sc.getCalendarSize(); i++) {

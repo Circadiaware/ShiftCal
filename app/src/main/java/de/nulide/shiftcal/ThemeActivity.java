@@ -8,25 +8,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Spinner;
-import android.widget.Switch;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.tools.ColorHelper;
 
@@ -48,7 +44,7 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
         setSupportActionBar(toolbar);
 
         int color = getResources().getColor(R.color.colorPrimary);
-        settings  = SettingsIO.readSettings(getFilesDir());
+        settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
@@ -99,7 +95,7 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(DialogInterface d, int lastSelectedColor, Integer[] allColors) {
         settings.setSetting(Settings.SET_COLOR, String.valueOf(lastSelectedColor));
-        SettingsIO.writeSettings(getFilesDir(), this, settings);
+        IO.writeSettings(getFilesDir(), this, settings);
         updateColors(lastSelectedColor);
         finish();
         Intent home = new Intent(this, CalendarActivity.class);
@@ -143,7 +139,7 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
             }else {
                 setDarkMode(position);
                 settings.setSetting(Settings.SET_DARK_MODE, String.valueOf(position));
-                SettingsIO.writeSettings(getFilesDir(), this, settings);
+                IO.writeSettings(getFilesDir(), this, settings);
                 finish();
                 Intent home = new Intent(this, CalendarActivity.class);
                 startActivity(home);

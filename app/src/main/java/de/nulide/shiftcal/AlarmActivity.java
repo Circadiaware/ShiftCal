@@ -18,7 +18,7 @@ import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.tools.Alarm;
 import de.nulide.shiftcal.tools.ColorHelper;
@@ -38,7 +38,7 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         int color = getResources().getColor(R.color.colorPrimary);
-        settings  = SettingsIO.readSettings(getFilesDir());
+        settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
@@ -70,7 +70,7 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             Ringtone tone = RingtoneManager.getRingtone(this, uri);
             settings.setSetting(Settings.SET_ALARM_TONE, uri.toString());
-            SettingsIO.writeSettings(getFilesDir(), this, settings);
+            IO.writeSettings(getFilesDir(), this, settings);
             btnTone.setText(tone.getTitle(this));
         }
         etMinutesAlarm.addTextChangedListener(this);
@@ -100,7 +100,7 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public void afterTextChanged(Editable s) {
         settings.setSetting(Settings.SET_ALARM_MINUTES, etMinutesAlarm.getText().toString());
-        SettingsIO.writeSettings(getFilesDir(), this, settings);
+        IO.writeSettings(getFilesDir(), this, settings);
         alarm.setAlarm(this);
     }
 
@@ -109,7 +109,7 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
         if (resultCode == Activity.RESULT_OK && requestCode == 5) {
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             settings.setSetting(Settings.SET_ALARM_TONE, uri.toString());
-            SettingsIO.writeSettings(getFilesDir(), this, settings);
+            IO.writeSettings(getFilesDir(), this, settings);
             Ringtone tone = RingtoneManager.getRingtone(this, uri);
             btnTone.setText(tone.getTitle(this));
 
@@ -131,7 +131,7 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
                 settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(false).toString());
                 alarm.removeAll(this);
             }
-            SettingsIO.writeSettings(getFilesDir(), this, settings);
+            IO.writeSettings(getFilesDir(), this, settings);
         }
     }
 }

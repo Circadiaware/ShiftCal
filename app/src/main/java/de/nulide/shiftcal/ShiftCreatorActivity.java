@@ -20,8 +20,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import de.nulide.shiftcal.logic.io.CalendarIO;
-import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
@@ -53,7 +52,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
         setSupportActionBar(toolbar);
 
         int color = getResources().getColor(R.color.colorPrimary);
-        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        Settings settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
@@ -62,7 +61,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
         Bundle bundle = getIntent().getExtras();
         toEditShift = bundle.getInt("toedit");
 
-        sc = CalendarIO.readShiftCal(getFilesDir());
+        sc = IO.readShiftCal(getFilesDir());
         stStart = new ShiftTime(0, 0);
         stEnd = new ShiftTime(0,0);
 
@@ -104,7 +103,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
                 } else {
                     sc.addShift(nS);
                 }
-                CalendarIO.writeShiftVal(getFilesDir(), this, sc);
+                IO.writeShiftCal(getFilesDir(), this, sc);
                 this.finish();
             } else {
                 Snackbar.make(view, "Error: Not enough Information!", Snackbar.LENGTH_LONG)

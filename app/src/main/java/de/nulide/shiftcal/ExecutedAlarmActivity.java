@@ -18,8 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 
-import de.nulide.shiftcal.logic.io.CalendarIO;
-import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
@@ -49,7 +48,7 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         int color = getResources().getColor(R.color.colorPrimary);
-        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        Settings settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
@@ -63,7 +62,7 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
         Alarm a = new Alarm(getFilesDir());
         a.setAlarm(this);
         Calendar cal = Calendar.getInstance();
-        ShiftCalendar sc = CalendarIO.readShiftCal(getFilesDir());
+        ShiftCalendar sc = IO.readShiftCal(getFilesDir());
         Bundle bundle = getIntent().getExtras();
         Shift s = sc.getShiftById(bundle.getInt(Alarm.EXT_SHIFT));
         tvClock = findViewById(R.id.EAClock);

@@ -30,8 +30,7 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.util.ArrayList;
 
-import de.nulide.shiftcal.logic.io.CalendarIO;
-import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
@@ -70,7 +69,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         con = this;
 
         int color = getResources().getColor(R.color.colorPrimary);
-        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        Settings settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
@@ -109,7 +108,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void updateCalendar() {
-        sc = CalendarIO.readShiftCal(getFilesDir());
+        sc = IO.readShiftCal(getFilesDir());
         calendar.removeDecorators();
         calendar.addDecorator(new DarkModeDecorator());
         for (int i = 0; i < sc.getShiftsSize(); i++) {
@@ -197,7 +196,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
             }
         }
         dialog.cancel();
-        CalendarIO.writeShiftVal(getFilesDir(), this, sc);
+        IO.writeShiftCal(getFilesDir(), this, sc);
         updateCalendar();
         updateTextView();
     }

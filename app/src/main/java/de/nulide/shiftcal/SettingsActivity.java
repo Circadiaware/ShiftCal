@@ -18,8 +18,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import de.nulide.shiftcal.logic.io.CalendarIO;
-import de.nulide.shiftcal.logic.io.SettingsIO;
+import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.tools.ColorHelper;
 
@@ -46,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         setSupportActionBar(toolbar);
 
         int color = getResources().getColor(R.color.colorPrimary);
-        Settings settings  = SettingsIO.readSettings(getFilesDir());
+        Settings settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
@@ -85,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
             case SET_EXP_CAL:
                 intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                intent.putExtra(Intent.EXTRA_TITLE, CalendarIO.FILE_NAME);
+                intent.putExtra(Intent.EXTRA_TITLE, IO.JSON_SC_FILE_NAME);
                 intent.setType("*/*");
                 startActivityForResult(intent, SAVE_REQUEST_CODE);
                 break;
@@ -115,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 uri = resultData.getData();
                 try {
                     InputStream inputStream = getContentResolver().openInputStream(uri);
-                    CalendarIO.importShiftCal(getFilesDir(), this, inputStream);
+                    IO.importShiftCal(getFilesDir(), this, inputStream);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -128,9 +127,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             if (resultData != null) {
                 uri = resultData.getData();
                 try {
-                    ParcelFileDescriptor sco = this.getContentResolver().
-                            openFileDescriptor(uri, "w");
-                    CalendarIO.exportShiftCal(getFilesDir(), new FileOutputStream(sco.getFileDescriptor()));
+                    ParcelFileDescriptor sco = this.getContentResolver().openFileDescriptor(uri, "w");
+                    IO.exportShiftCal(getFilesDir(), new FileOutputStream(sco.getFileDescriptor()));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
