@@ -10,6 +10,7 @@ public class Settings {
     public static final String SET_ALARM_TONE = "ALARM_TONE";
     public static final String SET_COLOR = "COLOR";
     public static final String SET_DARK_MODE = "DARK_MODE";
+    public static final String SET_DND = "DND";
 
 
     private HashMap<String, String> settings;

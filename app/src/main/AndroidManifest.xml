@@ -4,6 +4,7 @@
     package="de.nulide.shiftcal">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <application
         android:allowBackup="true"
@@ -11,19 +12,21 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".settings.DNDActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ThemeActivity"
+            android:name=".settings.ThemeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ExecutedAlarmActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".settings.AlarmActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AlarmActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".SettingsActivity"
+            android:name=".settings.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShiftCreatorActivity"

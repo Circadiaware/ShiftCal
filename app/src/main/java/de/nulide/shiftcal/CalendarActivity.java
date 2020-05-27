@@ -35,6 +35,8 @@ import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.WorkDay;
+import de.nulide.shiftcal.settings.SettingsActivity;
+import de.nulide.shiftcal.settings.ThemeActivity;
 import de.nulide.shiftcal.tools.ColorHelper;
 import de.nulide.shiftcal.ui.DarkModeDecorator;
 import de.nulide.shiftcal.ui.ShiftAdapter;

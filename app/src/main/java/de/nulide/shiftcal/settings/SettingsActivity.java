@@ -1,4 +1,4 @@
-package de.nulide.shiftcal;
+package de.nulide.shiftcal.settings;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,8 +18,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import de.nulide.shiftcal.R;
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
+import de.nulide.shiftcal.settings.AlarmActivity;
+import de.nulide.shiftcal.settings.ThemeActivity;
 import de.nulide.shiftcal.tools.ColorHelper;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -29,6 +32,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     private ArrayList<String> settingsL;
 
     final String SET_THEME = "Theme";
+    final String SET_DND = "DoNotDisturb";
     final String SET_ALARM = "ShiftAlarm";
     final String SET_EXP_CAL = "Export Calendar";
     final String SET_IMP_CAL = "Import Calendar";
@@ -60,6 +64,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         settingsList.setAdapter(listAdapter);
         settingsList.setOnItemClickListener(this);
         settingsL.add(SET_THEME);
+        settingsL.add(SET_DND);
         settingsL.add(SET_ALARM);
         settingsL.add(SET_EXP_CAL);
         settingsL.add(SET_IMP_CAL);
@@ -74,6 +79,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
             case SET_THEME:
                 intent = new Intent(this, ThemeActivity.class);
+                startActivity(intent);
+                break;
+
+            case SET_DND:
+                intent = new Intent(this, DNDActivity.class);
                 startActivity(intent);
                 break;
 

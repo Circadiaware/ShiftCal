@@ -1,4 +1,4 @@
-package de.nulide.shiftcal;
+package de.nulide.shiftcal.settings;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import de.nulide.shiftcal.R;
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.tools.Alarm;

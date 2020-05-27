@@ -1,4 +1,4 @@
-package de.nulide.shiftcal;
+package de.nulide.shiftcal.settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -22,6 +22,8 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.nulide.shiftcal.CalendarActivity;
+import de.nulide.shiftcal.R;
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.tools.ColorHelper;
