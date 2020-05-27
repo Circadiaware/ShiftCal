@@ -130,11 +130,13 @@ public class IO {
         File file = new File(dir, JSON_SETTINGS_FILE_NAME);
         ObjectMapper mapper = new ObjectMapper();
         String json = readJSON(file);
-        try {
-            return JSONFactory.convertJSONToSettings(
-                    mapper.readValue(json, JSONSettings.class));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        if(!json.isEmpty()) {
+            try {
+                return JSONFactory.convertJSONToSettings(
+                        mapper.readValue(json, JSONSettings.class));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
         return new Settings();
     }
@@ -173,15 +175,17 @@ public class IO {
     public static String readJSON(File file){
         StringBuilder json = new StringBuilder();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
+            if(file.exists()) {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
 
-            while ((line = br.readLine()) != null) {
-                json.append(line);
-                json.append('\n');
+                while ((line = br.readLine()) != null) {
+                    json.append(line);
+                    json.append('\n');
+                }
+                br.close();
+                return json.toString();
             }
-            br.close();
-            return json.toString();
         } catch (JsonProcessingException | FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
