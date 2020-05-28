@@ -12,7 +12,7 @@
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
-        <TextView
+        <TextClock
             android:id="@+id/EAClock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:padding="1mm"
             android:text="Shift"
             android:textAlignment="center"
-            android:textSize="14sp" />
+            android:textSize="36sp" />
 
         <TextView
             android:id="@+id/EAShiftA"
@@ -41,7 +41,7 @@
             android:padding="1mm"
             android:text="S"
             android:textAlignment="center"
-            android:textSize="14sp" />
+            android:textSize="24sp" />
 
     </LinearLayout>
 

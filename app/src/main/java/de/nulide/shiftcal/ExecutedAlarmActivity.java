@@ -29,7 +29,6 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
 
     private Ringtone ringtone;
 
-    private TextView tvClock;
     private TextView tvShiftN;
     private TextView tvShiftA;
     private FloatingActionButton btnEnd;
@@ -65,14 +64,12 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
         ShiftCalendar sc = IO.readShiftCal(getFilesDir());
         Bundle bundle = getIntent().getExtras();
         Shift s = sc.getShiftById(bundle.getInt(Alarm.EXT_SHIFT));
-        tvClock = findViewById(R.id.EAClock);
         String clockTime = cal.getTime().getHours() + ":";
         if (String.valueOf(cal.getTime().getMinutes()).length() > 1) {
             clockTime += cal.getTime().getMinutes();
         } else {
             clockTime += "0" + cal.getTime().getMinutes();
         }
-        tvClock.setText(clockTime);
         tvShiftN = findViewById(R.id.EAShift);
         tvShiftN.setText(s.getName());
         tvShiftN.setTextColor(s.getColor());
