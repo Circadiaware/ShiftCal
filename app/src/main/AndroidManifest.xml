@@ -48,6 +48,7 @@
         </activity>
 
         <receiver android:name=".receiver.AlarmReceiver" />
+        <receiver android:name=".receiver.DNDReceiver" />
         <receiver
             android:name=".receiver.BootReceiver"
             android:directBootAware="true"

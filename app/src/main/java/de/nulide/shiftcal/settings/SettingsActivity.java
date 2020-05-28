@@ -3,6 +3,7 @@ package de.nulide.shiftcal.settings;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.view.View;
@@ -64,7 +65,9 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         settingsList.setAdapter(listAdapter);
         settingsList.setOnItemClickListener(this);
         settingsL.add(SET_THEME);
-        settingsL.add(SET_DND);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            settingsL.add(SET_DND);
+        }
         settingsL.add(SET_ALARM);
         settingsL.add(SET_EXP_CAL);
         settingsL.add(SET_IMP_CAL);
