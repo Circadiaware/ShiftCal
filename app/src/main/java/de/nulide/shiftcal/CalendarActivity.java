@@ -47,6 +47,7 @@ import de.nulide.shiftcal.ui.TodayDayViewDecorator;
 public class CalendarActivity extends AppCompatActivity implements View.OnClickListener, OnDateSelectedListener, AdapterView.OnItemClickListener, View.OnTouchListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener {
 
     private static ShiftCalendar sc;
+    private static Settings settings;
     private static TextView tvName;
     private static TextView tvST;
     private static TextView tvET;
@@ -71,7 +72,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         con = this;
 
         int color = getResources().getColor(R.color.colorPrimary);
-        Settings settings  = IO.readSettings(getFilesDir());
+        settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
@@ -146,7 +147,15 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
                 fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_done));
             }
         } else if (view == btnPopup) {
-            fl.setBackgroundColor(Color.argb(200, 255, 255, 255));
+            if(settings.isAvailable(Settings.SET_DARK_MODE)){
+                int dm = Integer.parseInt(settings.getSetting(Settings.SET_DARK_MODE));
+                if(dm == ThemeActivity.DARK_MODE_ON){
+                    fl.setBackgroundColor(Color.argb(200, 0, 0, 0));
+
+                }else{
+                    fl.setBackgroundColor(Color.argb(200, 255, 255, 255));
+                }
+            }
             fl.setOnTouchListener(this);
             popup.show();
 
