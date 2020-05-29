@@ -220,6 +220,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
+        sc = IO.readShiftCal(getFilesDir());
         updateCalendar();
         updateTextView();
         fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
