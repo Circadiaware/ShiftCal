@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1mm"
-            android:text="By turning on this setting, Notification will blocked until the shift ends." />
+            android:text="By turning on this setting, Notification will be blocked until the shift ends." />
 
         <Switch
             android:id="@+id/swDND"
