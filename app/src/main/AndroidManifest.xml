@@ -13,9 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".settings.DNDActivity"
+            android:label="@string/title_activity_dnd"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".settings.ThemeActivity"
+            android:label="@string/title_activity_theme"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ExecutedAlarmActivity"
@@ -24,9 +26,11 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".settings.AlarmActivity"
+            android:label="@string/title_activity_shiftalarm"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShiftCreatorActivity"
