@@ -1,5 +1,6 @@
 package de.nulide.shiftcal;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -58,8 +59,11 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     private static MaterialCalendarView calendar;
 
+    private static FloatingActionButton fabShiftSelector;
+    private static TextView tvFabShiftSelector;
     private static FloatingActionButton fabEdit;
     private static boolean toEdit = false;
+    private int shiftID = -1;
 
     public static Context con;
 
@@ -90,6 +94,12 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         inflater.inflate(R.menu.menu_calendar, popup.getMenu());
 
 
+        fabShiftSelector = findViewById(R.id.fabShiftSelector);
+        fabShiftSelector.setBackgroundTintList(ColorStateList.valueOf(color));
+        fabShiftSelector.setBackgroundColor(color);
+        fabShiftSelector.setOnClickListener(this);
+        tvFabShiftSelector = findViewById(R.id.tvFabShiftSelector);
+
         fabEdit = findViewById(R.id.fabEdit);
         fabEdit.setBackgroundTintList(ColorStateList.valueOf(color));
         fabEdit.setBackgroundColor(color);
@@ -105,13 +115,12 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         tvET = findViewById(R.id.cTextViewET);
         fl = findViewById(R.id.CalendarTopLayer);
 
-
+        sc = IO.readShiftCal(getFilesDir());
         updateCalendar();
         updateTextView();
     }
 
     public void updateCalendar() {
-        sc = IO.readShiftCal(getFilesDir());
         calendar.removeDecorators();
         calendar.addDecorator(new DarkModeDecorator());
         for (int i = 0; i < sc.getShiftsSize(); i++) {
@@ -136,17 +145,37 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onClick(View view) {
         if (view == fabEdit) {
             if (toEdit) {
                 toEdit = false;
                 fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+                fabShiftSelector.setVisibility(View.INVISIBLE);
+                tvFabShiftSelector.setVisibility(View.INVISIBLE);
+                IO.writeShiftCal(getFilesDir(), this, sc);
             } else {
                 toEdit = true;
                 fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_done));
+                fabShiftSelector.setVisibility(View.VISIBLE);
+                tvFabShiftSelector.setVisibility(View.VISIBLE);
             }
-        } else if (view == btnPopup) {
+        } else if(view == fabShiftSelector) {
+            if(toEdit) {
+                LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.dialog_shift_selector, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                ListView listViewShifts = (ListView) dialoglayout;
+                ShiftAdapter adapter = new ShiftAdapter(this, new ArrayList<Shift>(sc.getShiftList()));
+                listViewShifts.setAdapter(adapter);
+                adapter.add(new Shift("Delete", "D", -1, null, null, Color.RED));
+                listViewShifts.setOnItemClickListener(this);
+                builder.setView(dialoglayout);
+                dialog = builder.create();
+                dialog.show();
+            }
+        }else if (view == btnPopup) {
             if(settings.isAvailable(Settings.SET_DARK_MODE)){
                 int dm = Integer.parseInt(settings.getSetting(Settings.SET_DARK_MODE));
                 if(dm == ThemeActivity.DARK_MODE_ON){
@@ -165,23 +194,29 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
         if (toEdit) {
-            LayoutInflater inflater = getLayoutInflater();
-            View dialoglayout = inflater.inflate(R.layout.dialog_shift_selector, null);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            ListView listViewShifts = (ListView) dialoglayout;
-            ShiftAdapter adapter = new ShiftAdapter(this, new ArrayList<Shift>(sc.getShiftList()));
-            listViewShifts.setAdapter(adapter);
-            adapter.add(new Shift("Delete", "D", -1, null, null, Color.RED));
-            listViewShifts.setOnItemClickListener(this);
-            builder.setView(dialoglayout);
-            dialog = builder.create();
-            dialog.show();
-
-        } else {
-            updateTextView();
+            if(shiftID != -1) {
+                if (shiftID < sc.getShiftsSize()) {
+                    if (!sc.hasWork(calendar.getSelectedDate())) {
+                        sc.addWday(new WorkDay(calendar.getSelectedDate(), sc.getShiftByIndex(shiftID).getId()));
+                    } else {
+                        sc.deleteWday(calendar.getSelectedDate());
+                        sc.addWday(new WorkDay(calendar.getSelectedDate(), sc.getShiftByIndex(shiftID).getId()));
+                    }
+                } else {
+                    if (sc.hasWork(calendar.getSelectedDate())) {
+                        sc.deleteWday(calendar.getSelectedDate());
+                    }
+                }
+                updateCalendar();
+                updateTextView();
+            }
+            } else{
+                updateTextView();
+            }
         }
-    }
 
+
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onResume() {
         super.onResume();
@@ -189,27 +224,34 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         updateTextView();
         fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
         toEdit = false;
+        fabShiftSelector.setVisibility(View.INVISIBLE);
+        tvFabShiftSelector.setVisibility(View.INVISIBLE);
+        int color = getResources().getColor(R.color.colorPrimary);
+        settings  = IO.readSettings(getFilesDir());
+        if(settings.isAvailable(Settings.SET_COLOR)){
+            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
+        }
+        fabShiftSelector.setBackgroundTintList(ColorStateList.valueOf(color));
+        fabShiftSelector.setBackgroundColor(color);
+        tvFabShiftSelector.setText("S");
+        shiftID = -1;
         popup.dismiss();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        shiftID = i;
         if (i < sc.getShiftsSize()) {
-            if (!sc.hasWork(calendar.getSelectedDate())) {
-                sc.addWday(new WorkDay(calendar.getSelectedDate(), sc.getShiftByIndex(i).getId()));
-            }else{
-                sc.deleteWday(calendar.getSelectedDate());
-                sc.addWday(new WorkDay(calendar.getSelectedDate(), sc.getShiftByIndex(i).getId()));
-            }
+            Shift s = sc.getShiftById(i);
+            fabShiftSelector.setBackgroundTintList(ColorStateList.valueOf(s.getColor()));
+            fabShiftSelector.setBackgroundColor(s.getColor());
+            tvFabShiftSelector.setText(s.getShort_name());
         } else {
-            if (sc.hasWork(calendar.getSelectedDate())) {
-                sc.deleteWday(calendar.getSelectedDate());
-            }
+            fabShiftSelector.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+            fabShiftSelector.setBackgroundColor(Color.RED);
+            tvFabShiftSelector.setText("D");
         }
         dialog.cancel();
-        IO.writeShiftCal(getFilesDir(), this, sc);
-        updateCalendar();
-        updateTextView();
     }
 
     @Override
