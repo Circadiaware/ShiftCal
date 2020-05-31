@@ -58,6 +58,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     private static PopupMenu popup;
 
     private static MaterialCalendarView calendar;
+    private static ShiftDayFormatter shiftFormatter;
 
     private static FloatingActionButton fabShiftSelector;
     private static TextView tvFabShiftSelector;
@@ -124,11 +125,23 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         calendar.removeDecorators();
         calendar.addDecorator(new DarkModeDecorator());
         for (int i = 0; i < sc.getShiftsSize(); i++) {
-            calendar.addDecorator(new ShiftDayViewDecorator(sc.getShiftByIndex(i), sc));
+            ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(sc.getShiftByIndex(i), sc);
+            calendar.addDecorator(decorator);
         }
         calendar.addDecorator(new TodayDayViewDecorator());
-        calendar.setDayFormatter(new ShiftDayFormatter(sc));
+        shiftFormatter = new ShiftDayFormatter(sc);
+        calendar.setDayFormatter(shiftFormatter);
+    }
 
+    public void updateSpecificCalendar(int shiftIndex){
+        if(shiftIndex != -1) {
+            Shift shiftToUpdate = sc.getShiftByIndex(shiftIndex);
+            calendar.removeDecorator(shiftToUpdate.getDecorator());
+            ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(shiftToUpdate, sc);
+            calendar.addDecorator(decorator);
+            shiftFormatter = new ShiftDayFormatter(sc);
+            calendar.setDayFormatter(shiftFormatter);
+        }
     }
 
     public void updateTextView() {
@@ -193,6 +206,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        int shiftIndexToUpdate = -1;
         if (toEdit) {
             if(shiftID != -1) {
                 if (shiftID < sc.getShiftsSize()) {
@@ -202,12 +216,14 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
                         sc.deleteWday(calendar.getSelectedDate());
                         sc.addWday(new WorkDay(calendar.getSelectedDate(), sc.getShiftByIndex(shiftID).getId()));
                     }
+                    shiftIndexToUpdate = shiftID;
                 } else {
                     if (sc.hasWork(calendar.getSelectedDate())) {
+                        shiftIndexToUpdate = sc.getShiftIndexByDate(date);
                         sc.deleteWday(calendar.getSelectedDate());
                     }
                 }
-                updateCalendar();
+                updateSpecificCalendar(shiftIndexToUpdate);
                 updateTextView();
             }
             } else{

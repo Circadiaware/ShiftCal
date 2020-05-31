@@ -2,6 +2,8 @@ package de.nulide.shiftcal.logic.object;
 
 import android.graphics.Color;
 
+import de.nulide.shiftcal.ui.ShiftDayViewDecorator;
+
 public class Shift {
     private String name;
     private String short_name;
@@ -9,6 +11,7 @@ public class Shift {
     private ShiftTime startTime;
     private ShiftTime endTime;
     private int color;
+    private ShiftDayViewDecorator decorator;
 
     public Shift(String name, String short_name, int id, ShiftTime startTime, ShiftTime endTime, int color) {
         this.name = name;
@@ -73,6 +76,14 @@ public class Shift {
 
     public void setEndTime(ShiftTime endTime) {
         this.endTime = endTime;
+    }
+
+    public ShiftDayViewDecorator getDecorator() {
+        return decorator;
+    }
+
+    public void setDecorator(ShiftDayViewDecorator decorator) {
+        this.decorator = decorator;
     }
 }
 

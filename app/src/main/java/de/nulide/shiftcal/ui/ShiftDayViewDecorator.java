@@ -18,6 +18,7 @@ public class ShiftDayViewDecorator implements DayViewDecorator {
     public ShiftDayViewDecorator(Shift shift, ShiftCalendar sc) {
         this.shift = shift;
         this.sc = sc;
+        shift.setDecorator(this);
     }
 
     @Override

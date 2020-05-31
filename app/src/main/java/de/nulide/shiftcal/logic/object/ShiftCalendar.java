@@ -135,4 +135,13 @@ public class ShiftCalendar {
         return false;
     }
 
+    public int getShiftIndexByDate(CalendarDay day) {
+        Shift s = getShiftByDate(day);
+        for (int i = 0; i < shifts.size(); i++){
+            if(shifts.get(i).getId() == s.getId()){
+                return i;
+            }
+        }
+        return -1;
+    }
 }
