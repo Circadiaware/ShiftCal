@@ -6,6 +6,7 @@ Features:
 
 - Erstelle Schichten
 - Konfiguriere Alarme für deine Schichten
+- Aktiviere DoNotDisturb um während der Arbeit nicht unnötig gestört zu werden.
 - Gestalte deine Schichten mit unterschiedlichen Farben
 - Siehe deine Schichten im Kalendar
 - Simples Material Design
