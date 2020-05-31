@@ -12,6 +12,8 @@ A FOSS Shift Calendar.
 - Select individual colors
 - View in the calendar
 - Simple material design
+- Set an Alarm to wake you up
+- Enable DoNotDisturb while working
 
 ## Open Source Library/Assets
 
