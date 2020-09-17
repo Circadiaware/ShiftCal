@@ -61,7 +61,7 @@ public class DNDActivity extends AppCompatActivity implements CompoundButton.OnC
     protected void onResume(){
         super.onResume();
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (mNotificationManager.isNotificationPolicyAccessGranted()) {
+        if (mNotificationManager.isNotificationPolicyAccessGranted() && new Boolean(settings.getSetting(Settings.SET_DND))) {
             swDND.setChecked(true);
             alarm.setAlarm(this);
         }else{
