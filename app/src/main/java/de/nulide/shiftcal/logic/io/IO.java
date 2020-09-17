@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -16,18 +15,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
-import java.io.StreamCorruptedException;
 
 import de.nulide.shiftcal.logic.io.object.JSONSettings;
 import de.nulide.shiftcal.logic.io.object.JSONShiftCalendar;
-import de.nulide.shiftcal.logic.io.object.SerialShiftCalendar;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.tools.Alarm;
 
 public class IO {
 
-    public static final String SERIAL_SC_FILE_NAME = "sc.o";
     public static final String JSON_SC_FILE_NAME = "sc.json";
     private static final String JSON_SETTINGS_FILE_NAME = "settings.json";
 
@@ -39,7 +35,7 @@ public class IO {
             ShiftCalendar sc = readShiftCal(dir);
             out = new PrintWriter(fos);
             out.write(mapper.writeValueAsString(
-                    SerialFactory.convertShiftCalendarToSerial(sc)));
+                    JSONFactory.convertShiftCalendarToJSON(sc)));
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,34 +59,7 @@ public class IO {
     }
 
     public static ShiftCalendar readShiftCal(File dir) {
-        File oldFile = new File(dir, SERIAL_SC_FILE_NAME);
         File newFile = new File(dir, JSON_SC_FILE_NAME);
-        if(oldFile.exists()){
-            ObjectInputStream input;
-            try {
-                input = new ObjectInputStream(new FileInputStream(oldFile));
-                SerialShiftCalendar readSC = (SerialShiftCalendar) input.readObject();
-                input.close();
-                ShiftCalendar sc = SerialFactory.convertSerialToShiftCalendar(readSC);
-                ObjectMapper mapper = new ObjectMapper();
-                try {
-                    String json = mapper.writeValueAsString(JSONFactory.convertShiftCalendarToJSON(sc));
-                    writeJSON(newFile, json);
-                    oldFile.delete();
-                    return sc;
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-            } catch (StreamCorruptedException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }else if(newFile.exists()){
             ObjectMapper mapper = new ObjectMapper();
             ShiftCalendar sc;
             try {
@@ -99,7 +68,6 @@ public class IO {
                 return sc;
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
-            }
 
 
         }
@@ -176,8 +144,6 @@ public class IO {
                 return readJSON(br);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return new String();
