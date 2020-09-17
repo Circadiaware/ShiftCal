@@ -259,7 +259,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         shiftID = i;
         if (i < sc.getShiftsSize()) {
-            Shift s = sc.getShiftById(i);
+            Shift s = sc.getShiftByIndex(i);
             fabShiftSelector.setBackgroundTintList(ColorStateList.valueOf(s.getColor()));
             fabShiftSelector.setBackgroundColor(s.getColor());
             tvFabShiftSelector.setText(s.getShort_name());
