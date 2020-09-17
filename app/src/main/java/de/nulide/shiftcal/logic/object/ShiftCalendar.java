@@ -81,7 +81,7 @@ public class ShiftCalendar {
     public void addShift(Shift s) {
         shifts.add(s);
         if (s.getId() >= nextShiftId) {
-            nextShiftId++;
+            nextShiftId = s.getId() +1;
         }
     }
 
