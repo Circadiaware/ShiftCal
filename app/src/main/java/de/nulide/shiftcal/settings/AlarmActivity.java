@@ -1,10 +1,12 @@
 package de.nulide.shiftcal.settings;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -23,6 +26,7 @@ import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.tools.Alarm;
 import de.nulide.shiftcal.tools.ColorHelper;
+import de.nulide.shiftcal.tools.PermissionHandler;
 
 public class AlarmActivity extends AppCompatActivity implements OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
@@ -119,10 +123,15 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView == switchAlarm) {
             if (isChecked) {
+                PermissionHandler.RequestOverlayPermission(this);
+                if(!PermissionHandler.CheckForOverlayPermission(this)){
+                    return;
+                }
                 etMinutesAlarm.setEnabled(true);
                 btnTone.setEnabled(true);
                 settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(true).toString());
