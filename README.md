@@ -18,3 +18,9 @@ A FOSS Shift Calendar.
 ## Open Source Library/Assets
 
 [See Licenses](ThirdPartyProjects.md)
+
+
+## Donate
+
+<script src="https://liberapay.com/Nulide/widgets/button.js"></script>
+<noscript><a href="https://liberapay.com/Nulide/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
