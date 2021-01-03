@@ -127,9 +127,6 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
             case DARK_MODE_OFF:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
-            case DARK_MODE_AUTO:
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                break;
         }
     }
 
@@ -138,6 +135,7 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
         if(parent == sDarkMode){
             if(settings.isAvailable(Settings.SET_DARK_MODE)&&
                     Integer.parseInt(settings.getSetting(Settings.SET_DARK_MODE)) == position){
+
             }else {
                 setDarkMode(position);
                 settings.setSetting(Settings.SET_DARK_MODE, String.valueOf(position));

@@ -123,7 +123,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     public void updateCalendar() {
         calendar.removeDecorators();
-        calendar.addDecorator(new DarkModeDecorator());
+        calendar.addDecorator(new DarkModeDecorator(this));
         for (int i = 0; i < sc.getShiftsSize(); i++) {
             ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(sc.getShiftByIndex(i), sc);
             calendar.addDecorator(decorator);

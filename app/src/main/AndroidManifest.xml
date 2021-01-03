@@ -48,6 +48,7 @@
         <activity
             android:name=".CalendarActivity"
             android:label="@string/title_activity_calendar"
+            android:configChanges="uiMode"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
