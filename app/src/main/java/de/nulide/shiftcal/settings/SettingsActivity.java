@@ -38,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     final String SET_EXP_CAL = "Export Calendar";
     final String SET_IMP_CAL = "Import Calendar";
     final String SET_TPP = "Third-Party-Projects";
+    final String SET_ABOUT = "About";
 
     final int SAVE_REQUEST_CODE = 355;
     final int READ_REQUEST_CODE = 356;
@@ -72,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         settingsL.add(SET_EXP_CAL);
         settingsL.add(SET_IMP_CAL);
         settingsL.add(SET_TPP);
+        settingsL.add(SET_ABOUT);
         listAdapter.notifyDataSetChanged();
     }
 
@@ -111,6 +113,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
             case SET_TPP:
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gitlab.com/Nulide/ShiftCal/-/blob/master/ThirdPartyProjects.md"));
+                startActivity(intent);
+                break;
+
+            case SET_ABOUT:
+                intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 break;
         }
