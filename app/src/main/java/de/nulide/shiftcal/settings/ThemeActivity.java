@@ -20,6 +20,7 @@ import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.nulide.shiftcal.CalendarActivity;
@@ -35,6 +36,7 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
     public final static int DARK_MODE_AUTO = 2;
 
     private Spinner sDarkMode;
+    private Spinner sFirstDayOfWeek;
     private Button btnAppColor;
     private Settings settings;
 
@@ -52,16 +54,16 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
         }
 
         sDarkMode = findViewById(R.id.sDarkMode);
-        ArrayAdapter<String> adapter;
-        List<String> list;
-        list = new ArrayList<String>();
-        list.add("Off");
-        list.add("On");
-        list.add("System");
-        adapter = new ArrayAdapter<String>(getApplicationContext(),
-                android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sDarkMode.setAdapter(adapter);
+        ArrayAdapter<String> adapterDarkMode;
+        List<String> listDarkMode;
+        listDarkMode = new ArrayList<String>();
+        listDarkMode.add("Off");
+        listDarkMode.add("On");
+        listDarkMode.add("System");
+        adapterDarkMode = new ArrayAdapter<String>(getApplicationContext(),
+                android.R.layout.simple_spinner_item, listDarkMode);
+        adapterDarkMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sDarkMode.setAdapter(adapterDarkMode);
         if (!settings.isAvailable(Settings.SET_DARK_MODE)) {
             settings.setSetting(Settings.SET_DARK_MODE, String.valueOf(DARK_MODE_OFF));
         }
@@ -70,6 +72,27 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
 
         btnAppColor = findViewById(R.id.btnAppColor);
         btnAppColor.setOnClickListener(this);
+
+        sFirstDayOfWeek = findViewById(R.id.sFirstDayOfWeek);
+        ArrayAdapter<String> adapterFDoW;
+        List<String> listFDoW;
+        listFDoW = new ArrayList<String>();
+        listFDoW.add("Sunday");
+        listFDoW.add("Monday");
+        listFDoW.add("Tuesday");
+        listFDoW.add("Wednesday");
+        listFDoW.add("Thursday");
+        listFDoW.add("Friday");
+        listFDoW.add("Saturday");
+        adapterFDoW = new ArrayAdapter<String>(getApplicationContext(),
+                android.R.layout.simple_spinner_item, listFDoW);
+        adapterFDoW.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sFirstDayOfWeek.setAdapter(adapterFDoW);
+        if (!settings.isAvailable(Settings.SET_START_OF_WEEK)) {
+            settings.setSetting(Settings.SET_START_OF_WEEK, String.valueOf(Calendar.MONDAY));
+        }
+        sFirstDayOfWeek.setSelection(Integer.parseInt(settings.getSetting(Settings.SET_START_OF_WEEK)));
+        sFirstDayOfWeek.setOnItemSelectedListener(this);
 
         updateColors(color);
     }
@@ -143,6 +166,14 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
                 finish();
                 Intent home = new Intent(this, CalendarActivity.class);
                 startActivity(home);
+            }
+        }else if(parent == sFirstDayOfWeek){
+            if(settings.isAvailable(Settings.SET_START_OF_WEEK)&&
+                    Integer.parseInt(settings.getSetting(Settings.SET_START_OF_WEEK)) == position){
+
+            }else {
+                settings.setSetting(Settings.SET_START_OF_WEEK, String.valueOf(position+1));
+                IO.writeSettings(getFilesDir(), this, settings);
             }
         }
     }

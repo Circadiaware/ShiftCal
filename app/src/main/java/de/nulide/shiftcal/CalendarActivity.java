@@ -30,6 +30,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
@@ -107,6 +108,9 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         fabEdit.setOnClickListener(this);
 
         calendar = findViewById(R.id.calendarView);
+        if(settings.isAvailable(Settings.SET_START_OF_WEEK)){
+
+        }
         calendar.setDateSelected(CalendarDay.today(), true);
         calendar.setOnDateChangedListener(this);
         calendar.setSelectionColor(color);
