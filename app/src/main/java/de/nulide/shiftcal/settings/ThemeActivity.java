@@ -89,7 +89,7 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
         adapterFDoW.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sFirstDayOfWeek.setAdapter(adapterFDoW);
         if (!settings.isAvailable(Settings.SET_START_OF_WEEK)) {
-            settings.setSetting(Settings.SET_START_OF_WEEK, String.valueOf(Calendar.MONDAY));
+            settings.setSetting(Settings.SET_START_OF_WEEK, String.valueOf(1));
         }
         sFirstDayOfWeek.setSelection(Integer.parseInt(settings.getSetting(Settings.SET_START_OF_WEEK)));
         sFirstDayOfWeek.setOnItemSelectedListener(this);
@@ -172,8 +172,11 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
                     Integer.parseInt(settings.getSetting(Settings.SET_START_OF_WEEK)) == position){
 
             }else {
-                settings.setSetting(Settings.SET_START_OF_WEEK, String.valueOf(position+1));
+                settings.setSetting(Settings.SET_START_OF_WEEK, String.valueOf(position));
                 IO.writeSettings(getFilesDir(), this, settings);
+                finish();
+                Intent home = new Intent(this, CalendarActivity.class);
+                startActivity(home);
             }
         }
     }

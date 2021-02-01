@@ -29,6 +29,8 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import org.threeten.bp.DayOfWeek;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -108,10 +110,52 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         fabEdit.setOnClickListener(this);
 
         calendar = findViewById(R.id.calendarView);
-        if(settings.isAvailable(Settings.SET_START_OF_WEEK)){
+        if(settings.isAvailable(Settings.SET_START_OF_WEEK)) {
+            switch (Integer.parseInt(settings.getSetting(Settings.SET_START_OF_WEEK))) {
+                case 0:
+                    calendar.state().edit()
+                            .setFirstDayOfWeek(DayOfWeek.SUNDAY)
+                            .commit();
+                    break;
+                case 1:
+                    calendar.state().edit()
+                            .setFirstDayOfWeek(DayOfWeek.MONDAY)
+                            .commit();
+                    break;
 
+                case 2:
+                    calendar.state().edit()
+                            .setFirstDayOfWeek(DayOfWeek.TUESDAY)
+                            .commit();
+                    break;
+
+                case 3:
+                    calendar.state().edit()
+                            .setFirstDayOfWeek(DayOfWeek.WEDNESDAY)
+                            .commit();
+                    break;
+
+                case 4:
+                    calendar.state().edit()
+                            .setFirstDayOfWeek(DayOfWeek.THURSDAY)
+                            .commit();
+                    break;
+
+                case 5:
+                    calendar.state().edit()
+                            .setFirstDayOfWeek(DayOfWeek.FRIDAY)
+                            .commit();
+                    break;
+
+                case 6:
+                    calendar.state().edit()
+                            .setFirstDayOfWeek(DayOfWeek.SATURDAY)
+                            .commit();
+                    break;
+            }
         }
-        calendar.setDateSelected(CalendarDay.today(), true);
+
+                calendar.setDateSelected(CalendarDay.today(), true);
         calendar.setOnDateChangedListener(this);
         calendar.setSelectionColor(color);
         tvName = findViewById(R.id.cTextViewName);
