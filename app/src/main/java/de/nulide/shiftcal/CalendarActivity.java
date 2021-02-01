@@ -2,6 +2,7 @@ package de.nulide.shiftcal;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -25,11 +26,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.niwattep.materialslidedatepicker.SlideDatePickerDialog;
+import com.niwattep.materialslidedatepicker.SlideDatePickerDialogCallback;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,7 +52,7 @@ import de.nulide.shiftcal.ui.ShiftDayFormatter;
 import de.nulide.shiftcal.ui.ShiftDayViewDecorator;
 import de.nulide.shiftcal.ui.TodayDayViewDecorator;
 
-public class CalendarActivity extends AppCompatActivity implements View.OnClickListener, OnDateSelectedListener, AdapterView.OnItemClickListener, View.OnTouchListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener {
+public class CalendarActivity extends AppCompatActivity implements View.OnClickListener, OnDateSelectedListener, AdapterView.OnItemClickListener, View.OnTouchListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener, SlideDatePickerDialogCallback {
 
     private static ShiftCalendar sc;
     private static Settings settings;
@@ -337,6 +341,12 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
                 intent = new Intent(this, ShiftsActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.iGoTo:
+                Calendar endDate = Calendar.getInstance();
+                endDate.add(Calendar.YEAR, 10);
+                new SlideDatePickerDialog.Builder().setShowYear(true)
+                        .setEndDate(endDate)
+                        .build().show(getSupportFragmentManager(), "TAG");
         }
 
         return false;
@@ -346,5 +356,11 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     public void onDismiss(PopupMenu menu) {
         fl.setBackgroundColor(Color.TRANSPARENT);
         fl.setOnTouchListener(null);
+    }
+
+    @Override
+    public void onPositiveClick(int day, int month, int year, Calendar calendar) {
+        this.calendar.setCurrentDate(CalendarDay.from(year, month, day));
+        this.calendar.setSelectedDate(CalendarDay.from(year, month, day));
     }
 }

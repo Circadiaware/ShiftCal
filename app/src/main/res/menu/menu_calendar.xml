@@ -6,4 +6,7 @@
     <item
         android:id="@+id/iShifts"
         android:title="Shifts" />
+    <item
+        android:id="@+id/iGoTo"
+        android:title="Go to" />
 </menu>
