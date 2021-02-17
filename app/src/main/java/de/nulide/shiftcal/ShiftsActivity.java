@@ -20,6 +20,7 @@ import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
+import de.nulide.shiftcal.sync.SyncHandler;
 import de.nulide.shiftcal.tools.ColorHelper;
 import de.nulide.shiftcal.ui.ShiftAdapter;
 
@@ -61,6 +62,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
 
     public void updateShifts() {
         sc = IO.readShiftCal(getFilesDir());
+        sc.setCr(getContentResolver());
         ShiftAdapter adapter = new ShiftAdapter(this, new ArrayList<Shift>(sc.getShiftList()));
         listViewShifts.setAdapter(adapter);
 
@@ -99,6 +101,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
             sc.deleteWorkDaysWithShift(sc.getShiftByIndex(index).getId());
             sc.deleteShiftByIndex(index);
             IO.writeShiftCal(getFilesDir(), this, sc);
+            SyncHandler.sync(this);
             updateShifts();
         } else {
             return false;

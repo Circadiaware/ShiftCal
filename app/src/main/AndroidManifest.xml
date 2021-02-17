@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".settings.CalendarSyncActivity"
-            android:label="@string/title_activity_dnd"
+            android:label="@string/title_activity_calendar_sync"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".settings.AboutActivity" />
         <activity

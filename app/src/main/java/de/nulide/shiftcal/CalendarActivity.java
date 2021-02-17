@@ -45,6 +45,7 @@ import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.WorkDay;
 import de.nulide.shiftcal.settings.SettingsActivity;
 import de.nulide.shiftcal.settings.ThemeActivity;
+import de.nulide.shiftcal.sync.SyncHandler;
 import de.nulide.shiftcal.tools.ColorHelper;
 import de.nulide.shiftcal.ui.DarkModeDecorator;
 import de.nulide.shiftcal.ui.ShiftAdapter;
@@ -169,6 +170,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         fl = findViewById(R.id.CalendarTopLayer);
 
         sc = IO.readShiftCal(getFilesDir());
+        sc.setCr(getContentResolver());
         updateCalendar();
         updateTextView();
     }
@@ -220,6 +222,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
                 fabShiftSelector.setVisibility(View.INVISIBLE);
                 tvFabShiftSelector.setVisibility(View.INVISIBLE);
                 IO.writeShiftCal(getFilesDir(), this, sc);
+                SyncHandler.sync(this);
             } else {
                 toEdit = true;
                 fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_done));
@@ -289,6 +292,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     protected void onResume() {
         super.onResume();
         sc = IO.readShiftCal(getFilesDir());
+        sc.setCr(getContentResolver());
         updateCalendar();
         updateTextView();
         fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));

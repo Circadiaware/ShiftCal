@@ -45,7 +45,7 @@ public class WorkDay {
         return shift;
     }
 
-    public void setShift(int shift) {
+    private void setShift(int shift) {
         this.shift = shift;
     }
 

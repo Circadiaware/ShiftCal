@@ -1,14 +1,20 @@
 package de.nulide.shiftcal.logic.object;
 
+import android.content.ContentResolver;
+
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.LinkedList;
+
+import de.nulide.shiftcal.sync.CalendarController;
+import de.nulide.shiftcal.sync.EventController;
 
 public class ShiftCalendar {
 
     private LinkedList<WorkDay> calendar;
     private LinkedList<Shift> shifts;
     private int nextShiftId;
+    private EventController ec;
 
     public ShiftCalendar() {
         calendar = new LinkedList<>();
@@ -27,6 +33,7 @@ public class ShiftCalendar {
     public void deleteWorkDaysWithShift(int id) {
         for (int i = calendar.size() - 1; i >= 0; i--) {
             if (calendar.get(i).getShift() == id) {
+                ec.deleteEvent(calendar.get(i).getEvId());
                 calendar.remove(i);
             }
         }
@@ -113,7 +120,7 @@ public class ShiftCalendar {
         return calendar.get(i);
     }
 
-    public int getWdayIDByDate(CalendarDay date) {
+    public int getWdayIndexByDate(CalendarDay date) {
         for (int i = 0; i < calendar.size(); i++) {
             if (calendar.get(i).checkDate(date)) {
                 return i;
@@ -123,7 +130,9 @@ public class ShiftCalendar {
     }
 
     public void deleteWday(CalendarDay date) {
-        calendar.remove(getWdayIDByDate(date));
+        WorkDay wd = getWdayByIndex(getWdayIndexByDate(date));
+        ec.deleteEvent(wd.getEvId());
+        calendar.remove(wd);
     }
 
     public boolean hasWork(CalendarDay date) {
@@ -143,5 +152,9 @@ public class ShiftCalendar {
             }
         }
         return -1;
+    }
+
+    public void setCr(ContentResolver cr) {
+        this.ec = new EventController(cr, CalendarController.getCalendarId(cr), this);
     }
 }
