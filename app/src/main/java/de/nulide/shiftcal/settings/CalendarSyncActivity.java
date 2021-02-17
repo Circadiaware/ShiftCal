@@ -15,6 +15,7 @@ import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.sync.CalendarController;
 import de.nulide.shiftcal.sync.EventController;
 import de.nulide.shiftcal.sync.SyncHandler;
+import de.nulide.shiftcal.tools.ColorHelper;
 import de.nulide.shiftcal.tools.PermissionHandler;
 
 public class CalendarSyncActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
@@ -27,13 +28,13 @@ public class CalendarSyncActivity extends AppCompatActivity implements CompoundB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_sync);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
         int color = getResources().getColor(R.color.colorPrimary);
         settings  = IO.readSettings(getFilesDir());
         if(settings.isAvailable(Settings.SET_COLOR)){
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
-        //ColorHelper.changeActivityColors(this, color);
+        ColorHelper.changeActivityColors(this, color);
 
         swCalendarSync = findViewById(R.id.swCalendarSync);
         if(settings.isAvailable(Settings.SET_SYNC)){

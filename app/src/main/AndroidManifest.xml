@@ -19,7 +19,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.CalendarSyncActivity"></activity>
+        <activity android:name=".settings.CalendarSyncActivity"
+            android:label="@string/title_activity_dnd"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".settings.AboutActivity" />
         <activity
             android:name=".settings.DNDActivity"

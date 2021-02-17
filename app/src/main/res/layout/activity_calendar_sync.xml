@@ -9,7 +9,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        tools:ignore="MissingConstraints">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -30,25 +31,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginBottom="5mm"
-        android:padding="1mm"
-        tools:ignore="MissingConstraints"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <include layout="@layout/content_calendar_sync" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1mm"
-            android:text="By turning on this setting, the shifts will be synced with your calendar" />
-
-        <Switch
-            android:id="@+id/swCalendarSync"
-            android:layout_margin="1mm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
