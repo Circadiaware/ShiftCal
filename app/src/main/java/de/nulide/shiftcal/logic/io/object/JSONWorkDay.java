@@ -4,13 +4,16 @@ public class JSONWorkDay {
 
     private JSONCalendarDate date;
     private int shift;
+    private long evId;
 
     public JSONWorkDay() {
+        this.evId = -1;
     }
 
-    public JSONWorkDay(JSONCalendarDate date, int shift) {
+    public JSONWorkDay(JSONCalendarDate date, int shift, long evId) {
         this.date = date;
         this.shift = shift;
+        this.evId = evId;
     }
 
     public JSONCalendarDate getDate() {
@@ -27,5 +30,13 @@ public class JSONWorkDay {
 
     public void setShift(int shift) {
         this.shift = shift;
+    }
+
+    public long getEvId() {
+        return evId;
+    }
+
+    public void setEvId(long evId) {
+        this.evId = evId;
     }
 }

@@ -66,11 +66,11 @@ public class JSONFactory {
     }
 
     public static JSONWorkDay convertWorkDayToJSON(WorkDay wd) {
-        return new JSONWorkDay(convertCalendarDateToJSON(wd.getDate()), wd.getShift());
+        return new JSONWorkDay(convertCalendarDateToJSON(wd.getDate()), wd.getShift(), wd.getEvId());
     }
 
     public static WorkDay convertJSONToWorkDay(JSONWorkDay swd) {
-        return new WorkDay(convertJSONToCalendarDate(swd.getDate()), swd.getShift());
+        return new WorkDay(convertJSONToCalendarDate(swd.getDate()), swd.getShift(), swd.getEvId());
     }
 
     public static JSONSettings convertSettingsToJSON(Settings s){

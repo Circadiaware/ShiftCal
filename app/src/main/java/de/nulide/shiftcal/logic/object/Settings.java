@@ -12,6 +12,7 @@ public class Settings {
     public static final String SET_DARK_MODE = "DARK_MODE";
     public static final String SET_DND = "DND";
     public static final String SET_START_OF_WEEK = "START_OF_WEEK";
+    public static final String SET_SYNC = "SYNC";
 
 
     private HashMap<String, String> settings;

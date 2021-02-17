@@ -35,6 +35,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     final String SET_THEME = "Theme";
     final String SET_DND = "DoNotDisturb";
     final String SET_ALARM = "ShiftAlarm";
+    final String SET_SYNC = "Sync";
     final String SET_EXP_CAL = "Export Calendar";
     final String SET_IMP_CAL = "Import Calendar";
     final String SET_TPP = "Third-Party-Projects";
@@ -70,6 +71,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             settingsL.add(SET_DND);
         }
         settingsL.add(SET_ALARM);
+        settingsL.add(SET_SYNC);
         settingsL.add(SET_EXP_CAL);
         settingsL.add(SET_IMP_CAL);
         settingsL.add(SET_TPP);
@@ -94,6 +96,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
             case SET_ALARM:
                 intent = new Intent(this, AlarmActivity.class);
+                startActivity(intent);
+                break;
+
+            case SET_SYNC:
+                intent = new Intent(this, CalendarSyncActivity.class);
                 startActivity(intent);
                 break;
 
