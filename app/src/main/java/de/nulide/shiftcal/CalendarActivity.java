@@ -47,6 +47,7 @@ import de.nulide.shiftcal.settings.SettingsActivity;
 import de.nulide.shiftcal.settings.ThemeActivity;
 import de.nulide.shiftcal.sync.SyncHandler;
 import de.nulide.shiftcal.tools.ColorHelper;
+import de.nulide.shiftcal.tools.PermissionHandler;
 import de.nulide.shiftcal.ui.DarkModeDecorator;
 import de.nulide.shiftcal.ui.ShiftAdapter;
 import de.nulide.shiftcal.ui.ShiftDayFormatter;
@@ -170,7 +171,9 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         fl = findViewById(R.id.CalendarTopLayer);
 
         sc = IO.readShiftCal(getFilesDir());
-        sc.setCr(getContentResolver());
+        if ((PermissionHandler.checkCalendar(this) && new Boolean(settings.getSetting(Settings.SET_SYNC)))) {
+            sc.setCr(getContentResolver());
+        }
         updateCalendar();
         updateTextView();
     }
