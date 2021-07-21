@@ -47,6 +47,20 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textAlignment="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="32dp"
+            android:text="Week of Year"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/cTextViewWN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAlignment="center" />
     </LinearLayout>
 
     <LinearLayout

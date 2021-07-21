@@ -35,8 +35,11 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 
+import java.time.temporal.ChronoField;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
@@ -61,6 +64,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     private static TextView tvName;
     private static TextView tvST;
     private static TextView tvET;
+    private static TextView tvWN;
     private static FrameLayout fl;
     private static AlertDialog dialog;
     private static ImageButton btnPopup;
@@ -74,6 +78,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     private static FloatingActionButton fabEdit;
     private static boolean toEdit = false;
     private int shiftID = -1;
+
 
     public static Context con;
 
@@ -168,6 +173,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         tvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         tvST = findViewById(R.id.cTextViewST);
         tvET = findViewById(R.id.cTextViewET);
+        tvWN = findViewById(R.id.cTextViewWN);
         fl = findViewById(R.id.CalendarTopLayer);
 
         sc = IO.readShiftCal(getFilesDir());
@@ -202,7 +208,8 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void updateTextView() {
-        Shift sel = sc.getShiftByDate(calendar.getSelectedDate());
+        CalendarDay selectedDate = calendar.getSelectedDate();
+        Shift sel = sc.getShiftByDate(selectedDate);
         if (sel != null) {
             tvName.setTextColor(sel.getColor());
             tvName.setText(sel.getName());
@@ -213,6 +220,10 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
             tvST.setText("");
             tvET.setText("");
         }
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        calendar.set(selectedDate.getYear(), selectedDate.getMonth()-1, selectedDate.getDay());
+        Integer weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+        tvWN.setText(weekOfYear.toString());
     }
 
     @SuppressLint("RestrictedApi")
@@ -264,6 +275,8 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+
+
         int shiftIndexToUpdate = -1;
         if (toEdit) {
             if(shiftID != -1) {
