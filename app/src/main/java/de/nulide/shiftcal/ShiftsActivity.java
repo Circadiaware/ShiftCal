@@ -22,6 +22,7 @@ import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.sync.SyncHandler;
 import de.nulide.shiftcal.tools.ColorHelper;
+import de.nulide.shiftcal.tools.PermissionHandler;
 import de.nulide.shiftcal.ui.ShiftAdapter;
 
 public class ShiftsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -62,7 +63,9 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
 
     public void updateShifts() {
         sc = IO.readShiftCal(getFilesDir());
-        sc.setCr(getContentResolver());
+        if(PermissionHandler.checkCalendar(this)) {
+            sc.setCr(getContentResolver());
+        }
         ShiftAdapter adapter = new ShiftAdapter(this, new ArrayList<Shift>(sc.getShiftList()));
         listViewShifts.setAdapter(adapter);
 
