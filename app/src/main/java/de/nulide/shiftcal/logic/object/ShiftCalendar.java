@@ -131,7 +131,9 @@ public class ShiftCalendar {
 
     public void deleteWday(CalendarDay date) {
         WorkDay wd = getWdayByIndex(getWdayIndexByDate(date));
-        ec.deleteEvent(wd.getEvId());
+        if(ec == null) {
+            ec.deleteEvent(wd.getEvId());
+        }
         calendar.remove(wd);
     }
 
