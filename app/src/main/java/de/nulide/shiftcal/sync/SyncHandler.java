@@ -7,10 +7,14 @@ import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.WorkDay;
+import de.nulide.shiftcal.tools.PermissionHandler;
 
 public class SyncHandler {
 
     public static void sync(Context c){
+        if(!PermissionHandler.checkCalendar(c)){
+            return;
+        }
         ShiftCalendar sc = IO.readShiftCal(c.getFilesDir());
         Settings settings = IO.readSettings(c.getFilesDir());
         long calId = CalendarController.getCalendarId(c.getContentResolver());
