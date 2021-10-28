@@ -31,6 +31,7 @@ import com.niwattep.materialslidedatepicker.SlideDatePickerDialogCallback;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
@@ -57,7 +58,7 @@ import de.nulide.shiftcal.ui.ShiftDayFormatter;
 import de.nulide.shiftcal.ui.ShiftDayViewDecorator;
 import de.nulide.shiftcal.ui.TodayDayViewDecorator;
 
-public class CalendarActivity extends AppCompatActivity implements View.OnClickListener, OnDateSelectedListener, AdapterView.OnItemClickListener, View.OnTouchListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener, SlideDatePickerDialogCallback {
+public class CalendarActivity extends AppCompatActivity implements View.OnClickListener, OnDateSelectedListener, AdapterView.OnItemClickListener, View.OnTouchListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener, SlideDatePickerDialogCallback, OnMonthChangedListener {
 
     private static ShiftCalendar sc;
     private static Settings settings;
@@ -72,6 +73,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     private static MaterialCalendarView calendar;
     private static ShiftDayFormatter shiftFormatter;
+    private static int year;                        // The current year, to know for faster loading. See updateCalendar()
 
     private static FloatingActionButton fabShiftSelector;
     private static TextView tvFabShiftSelector;
@@ -169,6 +171,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
                 calendar.setDateSelected(CalendarDay.today(), true);
         calendar.setOnDateChangedListener(this);
         calendar.setSelectionColor(color);
+        calendar.setOnMonthChangedListener(this);
         tvName = findViewById(R.id.cTextViewName);
         tvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
         tvST = findViewById(R.id.cTextViewST);
@@ -187,13 +190,15 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     public void updateCalendar() {
         calendar.removeDecorators();
         calendar.addDecorator(new DarkModeDecorator(this));
-        for (int i = 0; i < sc.getShiftsSize(); i++) {
-            ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(sc.getShiftByIndex(i), sc);
+        ShiftCalendar sortedCalendar = sc.getYear(calendar.getSelectedDate());
+        for (int i = 0; i < sortedCalendar.getShiftsSize(); i++) {
+            ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(sortedCalendar.getShiftByIndex(i), sortedCalendar);
             calendar.addDecorator(decorator);
         }
         calendar.addDecorator(new TodayDayViewDecorator());
-        shiftFormatter = new ShiftDayFormatter(sc);
+        shiftFormatter = new ShiftDayFormatter(sortedCalendar);
         calendar.setDayFormatter(shiftFormatter);
+        year = calendar.getSelectedDate().getYear();
     }
 
     public void updateSpecificCalendar(int shiftIndex){
@@ -384,5 +389,14 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     public void onPositiveClick(int day, int month, int year, Calendar calendar) {
         this.calendar.setCurrentDate(CalendarDay.from(year, month, day));
         this.calendar.setSelectedDate(CalendarDay.from(year, month, day));
+    }
+
+    @Override
+    public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+        if(date.getYear() != year) {
+            year = date.getYear();
+            calendar.setSelectedDate(date);
+            updateCalendar();
+        }
     }
 }

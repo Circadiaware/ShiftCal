@@ -159,4 +159,17 @@ public class ShiftCalendar {
     public void setCr(ContentResolver cr) {
         this.ec = new EventController(cr, CalendarController.getCalendarId(cr), this);
     }
+
+    public ShiftCalendar getYear(CalendarDay day){
+        ShiftCalendar sortedCalendar = new ShiftCalendar();
+        for(Shift s : shifts){
+            sortedCalendar.addShift(s);
+        }
+        for(WorkDay wday : calendar){
+            if(wday.getDate().getYear() == day.getYear()){
+                    sortedCalendar.addWday(wday);
+            }
+        }
+        return sortedCalendar;
+    }
 }
