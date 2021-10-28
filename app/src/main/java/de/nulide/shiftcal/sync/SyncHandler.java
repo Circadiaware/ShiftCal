@@ -23,6 +23,13 @@ public class SyncHandler implements Runnable {
         if (!PermissionHandler.checkCalendar(c)) {
             return;
         }
+        Settings settings  = IO.readSettings(c.getFilesDir());
+        if(settings.isAvailable(Settings.SET_SYNC)){
+            if(!new Boolean(settings.getSetting(Settings.SET_SYNC))){
+                return;
+            }
+        }
+
         CalendarController.deleteCalendar(c.getContentResolver());
         new Thread(new SyncHandler(c)).start();
     }
