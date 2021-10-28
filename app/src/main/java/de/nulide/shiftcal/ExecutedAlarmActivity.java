@@ -80,9 +80,11 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
         btnEnd.setBackgroundTintList(ColorStateList.valueOf(color));
         btnEnd.setOnClickListener(this);
 
-        Uri uri = Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE));
-        ringtone = RingtoneManager.getRingtone(this, uri);
-        ringtone.play();
+        if(s.isToAlarm()) {
+            Uri uri = Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE));
+            ringtone = RingtoneManager.getRingtone(this, uri);
+            ringtone.play();
+        }
     }
 
     @Override

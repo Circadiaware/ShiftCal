@@ -29,6 +29,11 @@ public class SyncHandler implements Runnable {
 
     @Override
     public void run() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         ShiftCalendar sc = IO.readShiftCal(c.getFilesDir());
         Settings settings = IO.readSettings(c.getFilesDir());
         long calId = CalendarController.getCalendarId(c.getContentResolver());
@@ -45,6 +50,5 @@ public class SyncHandler implements Runnable {
             WorkDay wd = sc.getWdayByIndex(i);
             ec.createEvent(sc.getWdayByIndex(i));
         }
-        IO.writeShiftCal(c.getFilesDir(), c, sc);
     }
 }

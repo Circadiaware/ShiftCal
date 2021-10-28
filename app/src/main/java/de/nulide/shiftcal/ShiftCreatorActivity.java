@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
     private Button btnStartTime;
     private Button btnEndTime;
     private Button btnCP;
+    private Switch swAlarmForShift;
     private TimePickerDialog timePickerST;
     private TimePickerDialog timePickerET;
 
@@ -77,6 +79,15 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
         btnEndTime.setOnClickListener(this);
         btnCP = findViewById(R.id.colorPickerBtn);
         btnCP.setOnClickListener(this);
+        swAlarmForShift = findViewById(R.id.swAlarmForShift);
+        swAlarmForShift.setChecked(true);
+        swAlarmForShift.setEnabled(false);
+        if(settings.isAvailable(Settings.SET_ALARM_ON_OFF)){
+            if(new Boolean(settings.getSetting(Settings.SET_ALARM_ON_OFF))){
+                swAlarmForShift.setEnabled(true);
+            }
+        }
+
         updateButtonColors(color);
 
         if (toEditShift != -1) {
@@ -84,6 +95,7 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
             etViewSName.setText(sc.getShiftById(toEditShift).getShort_name());
             stStart = sc.getShiftById(toEditShift).getStartTime();
             stEnd = sc.getShiftById(toEditShift).getEndTime();
+            swAlarmForShift.setChecked(sc.getShiftById(toEditShift).isToAlarm());
             updateButtonColors(sc.getShiftById(toEditShift).getColor());
             updateTime();
         }
@@ -96,7 +108,12 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
             String sname = etViewSName.getText().toString();
 
             if (!name.isEmpty() && !sname.isEmpty()) {
-                Shift nS = new Shift(name, sname, sc.getNextShiftId(), stStart, stEnd, ((ColorDrawable)btnCP.getBackground()).getColor());
+                Shift nS;
+                if(swAlarmForShift.isEnabled()) {
+                    nS = new Shift(name, sname, sc.getNextShiftId(), stStart, stEnd, ((ColorDrawable) btnCP.getBackground()).getColor(), swAlarmForShift.isChecked());
+                }else{
+                    nS = new Shift(name, sname, sc.getNextShiftId(), stStart, stEnd, ((ColorDrawable) btnCP.getBackground()).getColor(), true);
+                }
                 if (toEditShift != -1) {
                     nS.setId(sc.getShiftById(toEditShift).getId());
                     sc.setShift(toEditShift, nS);
