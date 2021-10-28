@@ -26,6 +26,10 @@ public class EventController {
         this.sc = sc;
     }
 
+    public EventController(){
+
+    }
+
     public long createEvent(WorkDay day) {
         if (cr != null) {
             if (calId == -1) {
@@ -58,6 +62,7 @@ public class EventController {
         return -1;
     }
 
+    //not working
     public void deleteEvent(long evId) {
         if (cr != null) {
             String[] args = new String[]{Long.toString(evId)};

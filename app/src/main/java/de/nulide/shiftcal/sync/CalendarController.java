@@ -53,9 +53,13 @@ public class CalendarController {
         return values;
     }
 
-    public static boolean deleteCalendar(ContentResolver cr) {
+    public static void deleteCalendar(ContentResolver cr) {
         Uri calUri = ContentUris.withAppendedId(buildCalUri(), getCalendarId(cr));
-        return cr.delete(calUri, null, null) == 1;
+        try {
+            cr.delete(calUri, null, null);
+        }catch(IllegalArgumentException e){
+
+        }
     }
 
     public static long getCalendarId(ContentResolver cr) {

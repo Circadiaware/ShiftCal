@@ -14,7 +14,6 @@ public class ShiftCalendar {
     private LinkedList<WorkDay> calendar;
     private LinkedList<Shift> shifts;
     private int nextShiftId;
-    private EventController ec;
 
     public ShiftCalendar() {
         calendar = new LinkedList<>();
@@ -33,7 +32,6 @@ public class ShiftCalendar {
     public void deleteWorkDaysWithShift(int id) {
         for (int i = calendar.size() - 1; i >= 0; i--) {
             if (calendar.get(i).getShift() == id) {
-                ec.deleteEvent(calendar.get(i).getEvId());
                 calendar.remove(i);
             }
         }
@@ -131,9 +129,6 @@ public class ShiftCalendar {
 
     public void deleteWday(CalendarDay date) {
         WorkDay wd = getWdayByIndex(getWdayIndexByDate(date));
-        if(ec != null) {
-            ec.deleteEvent(wd.getEvId());
-        }
         calendar.remove(wd);
     }
 
@@ -154,10 +149,6 @@ public class ShiftCalendar {
             }
         }
         return -1;
-    }
-
-    public void setCr(ContentResolver cr) {
-        this.ec = new EventController(cr, CalendarController.getCalendarId(cr), this);
     }
 
     public ShiftCalendar getYear(CalendarDay day){

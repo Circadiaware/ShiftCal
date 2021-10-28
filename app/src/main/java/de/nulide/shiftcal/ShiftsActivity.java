@@ -63,12 +63,8 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
 
     public void updateShifts() {
         sc = IO.readShiftCal(getFilesDir());
-        if(PermissionHandler.checkCalendar(this)) {
-            sc.setCr(getContentResolver());
-        }
         ShiftAdapter adapter = new ShiftAdapter(this, new ArrayList<Shift>(sc.getShiftList()));
         listViewShifts.setAdapter(adapter);
-
     }
 
     @Override

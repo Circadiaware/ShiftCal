@@ -3,6 +3,7 @@ package de.nulide.shiftcal.logic.io;
 import android.content.Context;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -47,6 +48,7 @@ public class IO {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String json = readJSON(br);
         ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES );
         if(!json.isEmpty()) {
             try {
                 ShiftCalendar sc =  JSONFactory.convertJSONToShiftCalendar(
@@ -61,6 +63,7 @@ public class IO {
     public static ShiftCalendar readShiftCal(File dir) {
         File newFile = new File(dir, JSON_SC_FILE_NAME);
             ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES );
             ShiftCalendar sc;
             try {
                 sc = JSONFactory.convertJSONToShiftCalendar(

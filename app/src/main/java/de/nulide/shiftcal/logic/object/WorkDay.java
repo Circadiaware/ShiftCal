@@ -5,32 +5,27 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 public class WorkDay {
     private CalendarDate date;
     private int shift;
-    private long evId;
 
     public WorkDay(CalendarDate date, int shift) {
         this.date = date;
         this.shift = shift;
-        this.evId = -1;
     }
 
     public WorkDay(CalendarDay date, int shift) {
         CalendarDate day = new CalendarDate(date.getYear(), date.getMonth(), date.getDay());
         this.date = day;
         this.shift = shift;
-        this.evId = -1;
     }
 
     public WorkDay(CalendarDate date, int shift, long evId) {
         this.date = date;
         this.shift = shift;
-        this.evId = evId;
     }
 
     public WorkDay(CalendarDay date, int shift, long evId) {
         CalendarDate day = new CalendarDate(date.getYear(), date.getMonth(), date.getDay());
         this.date = day;
         this.shift = shift;
-        this.evId = evId;
     }
 
     public CalendarDate getDate() {
@@ -56,13 +51,5 @@ public class WorkDay {
             }
         }
         return false;
-    }
-
-    public long getEvId() {
-        return evId;
-    }
-
-    public void setEvId(long evId) {
-        this.evId = evId;
     }
 }
