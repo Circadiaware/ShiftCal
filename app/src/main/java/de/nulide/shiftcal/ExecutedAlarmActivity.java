@@ -88,11 +88,6 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onPause() {
         super.onPause();
-        boolean isScreenAwake = powerManager.isInteractive();
-        if (isScreenAwake) {
-            ringtone.stop();
-            finish();
-        }
     }
 
     @Override
