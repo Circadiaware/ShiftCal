@@ -59,7 +59,7 @@
                 android:layout_weight="1"
                 android:text="Start Time:" />
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/btnStartTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_weight="1"
                 android:text="End Time:" />
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/btnEndTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                 android:layout_weight="1"
                 android:text="Color:" />
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/colorPickerBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

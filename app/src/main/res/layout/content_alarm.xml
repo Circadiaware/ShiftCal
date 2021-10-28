@@ -49,7 +49,7 @@
             android:layout_margin="1mm"
             android:text="Alarmtone:" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/btnAlarmSound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
