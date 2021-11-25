@@ -5,16 +5,15 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import java.io.File;
 import java.util.Calendar;
 
-import de.nulide.shiftcal.receiver.AlarmReceiver;
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.WorkDay;
+import de.nulide.shiftcal.receiver.AlarmReceiver;
 import de.nulide.shiftcal.receiver.DNDReceiver;
 
 public class Alarm {
@@ -40,21 +39,23 @@ public class Alarm {
                     int minutes = Integer.parseInt(settings.getSetting(Settings.SET_ALARM_MINUTES));
                     for (int i = 0; i < sc.getCalendarSize(); i++) {
                         WorkDay d = sc.getWdayByIndex(i);
-                        Calendar cal = Calendar.getInstance();
-                        cal.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getStartTime().getHour(), sc.getShiftById(d.getShift()).getStartTime().getMinute(), 0);
-                        cal.add(Calendar.MINUTE, -minutes);
-                        if (nearest == null) {
-                            if (today.getTimeInMillis() < cal.getTimeInMillis()) {
+                        if (sc.getShiftById(d.getShift()).isToAlarm()) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getStartTime().getHour(), sc.getShiftById(d.getShift()).getStartTime().getMinute(), 0);
+                            cal.add(Calendar.MINUTE, -minutes);
+                            if (nearest == null) {
+                                if (today.getTimeInMillis() < cal.getTimeInMillis()) {
+                                    nearest = cal;
+                                    id = i;
+                                }
+                            } else if (nearest.getTimeInMillis() > cal.getTimeInMillis() && cal.getTimeInMillis() > today.getTimeInMillis()) {
                                 nearest = cal;
                                 id = i;
                             }
-                        } else if (nearest.getTimeInMillis() > cal.getTimeInMillis() && cal.getTimeInMillis() > today.getTimeInMillis()) {
-                            nearest = cal;
-                            id = i;
+                            Intent intent = new Intent(t, AlarmReceiver.class);
+                            PendingIntent pi = PendingIntent.getBroadcast(t, i, intent, 0);
+                            mgr.cancel(pi);
                         }
-                        Intent intent = new Intent(t, AlarmReceiver.class);
-                        PendingIntent pi = PendingIntent.getBroadcast(t, i, intent, 0);
-                        mgr.cancel(pi);
                     }
                     if(nearest == null){
                         return;
