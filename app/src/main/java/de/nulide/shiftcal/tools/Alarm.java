@@ -96,23 +96,25 @@ public class Alarm {
                 ShiftCalendar sc = IO.readShiftCal(f);
                 for (int i = 0; i < sc.getCalendarSize(); i++) {
                     WorkDay d = sc.getWdayByIndex(i);
-                    Calendar caln = Calendar.getInstance();
-                    Calendar calr = Calendar.getInstance();
-                    caln.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getStartTime().getHour(), sc.getShiftById(d.getShift()).getStartTime().getMinute(), 0);
-                    calr.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getEndTime().getHour(), sc.getShiftById(d.getShift()).getEndTime().getMinute(), 0);
-                    if (nearest == null) {
-                        if (today.getTimeInMillis() < caln.getTimeInMillis()) {
+                    if (sc.getShiftById(d.getShift()).isToAlarm()) {
+                        Calendar caln = Calendar.getInstance();
+                        Calendar calr = Calendar.getInstance();
+                        caln.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getStartTime().getHour(), sc.getShiftById(d.getShift()).getStartTime().getMinute(), 0);
+                        calr.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getEndTime().getHour(), sc.getShiftById(d.getShift()).getEndTime().getMinute(), 0);
+                        if (nearest == null) {
+                            if (today.getTimeInMillis() < caln.getTimeInMillis()) {
+                                nearest = caln;
+                                idn = i;
+                            }
+                        } else if (nearest.getTimeInMillis() > caln.getTimeInMillis() && caln.getTimeInMillis() > today.getTimeInMillis()) {
                             nearest = caln;
                             idn = i;
                         }
-                    } else if (nearest.getTimeInMillis() > caln.getTimeInMillis() && caln.getTimeInMillis() > today.getTimeInMillis()) {
-                        nearest = caln;
-                        idn = i;
-                    }
-                    if (running == null) {
-                        if (today.getTimeInMillis() < calr.getTimeInMillis() && caln.getTimeInMillis() < today.getTimeInMillis()) {
-                            running = calr;
-                            idr = i;
+                        if (running == null) {
+                            if (today.getTimeInMillis() < calr.getTimeInMillis() && caln.getTimeInMillis() < today.getTimeInMillis()) {
+                                running = calr;
+                                idr = i;
+                            }
                         }
                     }
                 }
