@@ -19,7 +19,7 @@ A FOSS Shift Calendar.
 
 [See Licenses](ThirdPartyProjects.md)
 
-## Contributors - Translation
+## Contributors
 
 Petter Enkvist - [littlecoffeetables](https://gitlab.com/littlecoffeetables)
 
