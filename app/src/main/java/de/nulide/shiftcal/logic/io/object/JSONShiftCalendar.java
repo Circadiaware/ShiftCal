@@ -1,35 +1,36 @@
 package de.nulide.shiftcal.logic.io.object;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JSONShiftCalendar {
 
-    private LinkedList<JSONWorkDay> calendar;
-    private LinkedList<JSONShift> shifts;
+    private List<JSONWorkDay> calendar;
+    private List<JSONShift> shifts;
 
     public JSONShiftCalendar() {
-        calendar = new LinkedList<>();
-        shifts = new LinkedList<>();
+        calendar = new ArrayList<>();
+        shifts = new ArrayList<>();
     }
 
-    public JSONShiftCalendar(LinkedList<JSONWorkDay> calendar, LinkedList<JSONShift> shifts) {
+    public JSONShiftCalendar(List<JSONWorkDay> calendar, List<JSONShift> shifts) {
         this.calendar = calendar;
         this.shifts = shifts;
     }
 
-    public LinkedList<JSONWorkDay> getCalendar() {
+    public List<JSONWorkDay> getCalendar() {
         return calendar;
     }
 
-    public void setCalendar(LinkedList<JSONWorkDay> calendar) {
+    public void setCalendar(List<JSONWorkDay> calendar) {
         this.calendar = calendar;
     }
 
-    public LinkedList<JSONShift> getShifts() {
+    public List<JSONShift> getShifts() {
         return shifts;
     }
 
-    public void setShifts(LinkedList<JSONShift> shifts) {
+    public void setShifts(List<JSONShift> shifts) {
         this.shifts = shifts;
     }
 }

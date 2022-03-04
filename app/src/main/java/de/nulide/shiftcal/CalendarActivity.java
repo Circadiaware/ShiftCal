@@ -40,6 +40,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import de.nulide.shiftcal.logic.io.IO;
@@ -189,8 +190,10 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         calendar.addDecorator(new DarkModeDecorator(this));
         ShiftCalendar sortedCalendar = sc.getYear(calendar.getSelectedDate());
         for (int i = 0; i < sortedCalendar.getShiftsSize(); i++) {
-            ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(sortedCalendar.getShiftByIndex(i), sortedCalendar);
-            calendar.addDecorator(decorator);
+            ShiftDayViewDecorator decoratorTop = new ShiftDayViewDecorator(sortedCalendar.getShiftByIndex(i), sortedCalendar, true);
+            ShiftDayViewDecorator decoratorBottom = new ShiftDayViewDecorator(sortedCalendar.getShiftByIndex(i), sortedCalendar, false);
+            calendar.addDecorator(decoratorTop);
+            calendar.addDecorator(decoratorBottom);
         }
         calendar.addDecorator(new TodayDayViewDecorator());
         shiftFormatter = new ShiftDayFormatter(sortedCalendar);
@@ -201,9 +204,11 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     public void updateSpecificCalendar(int shiftIndex){
         if(shiftIndex != -1) {
             Shift shiftToUpdate = sc.getShiftByIndex(shiftIndex);
-            calendar.removeDecorator(shiftToUpdate.getDecorator());
-            ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(shiftToUpdate, sc);
-            calendar.addDecorator(decorator);
+            for (int top = 0; top < 2; ++top) {
+                calendar.removeDecorator(shiftToUpdate.getDecorator(top == 1));
+                ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(shiftToUpdate, sc, top == 1);
+                calendar.addDecorator(decorator);
+            }
             shiftFormatter = new ShiftDayFormatter(sc);
             calendar.setDayFormatter(shiftFormatter);
         }
@@ -211,12 +216,20 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     public void updateTextView() {
         CalendarDay selectedDate = calendar.getSelectedDate();
-        Shift sel = sc.getShiftByDate(selectedDate);
-        if (sel != null) {
-            tvName.setTextColor(sel.getColor());
-            tvName.setText(sel.getName());
-            tvST.setText("Start Time: " + sel.getStartTime().toString());
-            tvET.setText("End Time: " + sel.getEndTime().toString());
+        List<Shift> sel = sc.getShiftsByDate(selectedDate);
+        if (sel.size() == 1) {
+            Shift shift = sel.get(0);
+            tvName.setTextColor(shift.getColor());
+            tvName.setText(shift.getName());
+            tvST.setText("Start Time: " + shift.getStartTime().toString());
+            tvET.setText("End Time: " + shift.getEndTime().toString());
+        } else if (sel.size() == 2) {
+            Shift shift1 = sel.get(0);
+            Shift shift2 = sel.get(1);
+            tvName.setTextColor(shift1.getColor());
+            tvName.setText(shift1.getName() + " / " + shift2.getName());
+            tvST.setText("Start Time: " + shift1.getStartTime().toString() + " / " + shift2.getStartTime().toString());
+            tvET.setText("End Time: " + shift1.getEndTime().toString() + " / " + shift2.getEndTime().toString());
         } else {
             tvName.setText("");
             tvST.setText("");
@@ -281,28 +294,36 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
         int shiftIndexToUpdate = -1;
         if (toEdit) {
-            if(shiftID != -1) {
+            if (shiftID != -1) {
+                CalendarDay csd = calendar.getSelectedDate();
                 if (shiftID < sc.getShiftsSize()) {
-                    if (!sc.hasWork(calendar.getSelectedDate())) {
-                        sc.addWday(new WorkDay(calendar.getSelectedDate(), sc.getShiftByIndex(shiftID).getId()));
+                    List<Shift> existingShifts = sc.getShiftsByDate(csd);
+                    if (existingShifts.size() == 0) {
+                        sc.addWday(new WorkDay(csd, sc.getShiftByIndex(shiftID).getId()));
+                    } else if (existingShifts.size() == 1) {
+                        if (existingShifts.get(0).getId() == shiftID) {
+                            sc.deleteWday(csd);
+                        }
+                        sc.addWday(new WorkDay(csd, sc.getShiftByIndex(shiftID).getId()));
                     } else {
-                        sc.deleteWday(calendar.getSelectedDate());
-                        sc.addWday(new WorkDay(calendar.getSelectedDate(), sc.getShiftByIndex(shiftID).getId()));
+                        // for simplicity, just delete all existing shifts and add the selected one.
+                        sc.deleteAllWday(csd);
+                        sc.addWday(new WorkDay(csd, sc.getShiftByIndex(shiftID).getId()));
                     }
                     shiftIndexToUpdate = shiftID;
                 } else {
-                    if (sc.hasWork(calendar.getSelectedDate())) {
+                    if (sc.hasWork(csd)) {
                         shiftIndexToUpdate = sc.getShiftIndexByDate(date);
-                        sc.deleteWday(calendar.getSelectedDate());
+                        sc.deleteAllWday(csd);
                     }
                 }
                 updateSpecificCalendar(shiftIndexToUpdate);
                 updateTextView();
             }
-            } else{
-                updateTextView();
-            }
+        } else {
+            updateTextView();
         }
+    }
 
 
     @SuppressLint("RestrictedApi")

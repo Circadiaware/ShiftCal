@@ -28,6 +28,10 @@ public class ShiftTime {
         this.minute = minute;
     }
 
+    public int toInt() {
+        return hour * 60 + minute;
+    }
+
     @NonNull
     @Override
     public String toString() {

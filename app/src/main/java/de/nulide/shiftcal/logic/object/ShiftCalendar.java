@@ -4,24 +4,27 @@ import android.content.ContentResolver;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import de.nulide.shiftcal.sync.CalendarController;
 import de.nulide.shiftcal.sync.EventController;
 
 public class ShiftCalendar {
 
-    private LinkedList<WorkDay> calendar;
-    private LinkedList<Shift> shifts;
+    private List<WorkDay> calendar;
+    private List<Shift> shifts;
     private int nextShiftId;
 
     public ShiftCalendar() {
-        calendar = new LinkedList<>();
-        shifts = new LinkedList<>();
+        calendar = new ArrayList<>();
+        shifts = new ArrayList<>();
         nextShiftId = 0;
     }
 
-    public LinkedList<Shift> getShiftList() {
+    public List<Shift> getShiftList() {
         return shifts;
     }
 
@@ -61,6 +64,17 @@ public class ShiftCalendar {
         return null;
     }
 
+    public List<Shift> getShiftsByDate(CalendarDay day) {
+        List<Shift> shifts = new ArrayList<>();
+        for (int i = 0; i < this.calendar.size(); i++) {
+            if (this.calendar.get(i).checkDate(day)) {
+                shifts.add(getShiftById(this.calendar.get(i).getShift()));
+            }
+        }
+        sortShifts(shifts);
+        return shifts;
+    }
+
     public void deleteShift(int id) {
         for (int i = 0; i < shifts.size(); i++) {
             if (shifts.get(i).getId() == id) {
@@ -98,16 +112,18 @@ public class ShiftCalendar {
         return nextShiftId;
     }
 
-    public boolean checkIfShift(CalendarDay day, Shift s) {
+    public boolean checkIfShift(CalendarDay day, Shift s, boolean first) {
+        List<Shift> dayShifts = new ArrayList<>();
         for (int i = 0; i < this.calendar.size(); i++) {
             if (this.calendar.get(i).checkDate(day)) {
-                if (getShiftById(this.calendar.get(i).getShift()).getId() == s.getId()) {
-                    return true;
-                }
+                dayShifts.add(getShiftById(this.calendar.get(i).getShift()));
             }
         }
+        sortShifts(dayShifts);
 
-        return false;
+        if (dayShifts.size() == 0) return false;
+        if (dayShifts.size() == 1) return dayShifts.get(0).getId() == s.getId();
+        return dayShifts.get(first ? 0 : 1).getId() == s.getId();
     }
 
     public int getCalendarSize() {
@@ -130,6 +146,15 @@ public class ShiftCalendar {
     public void deleteWday(CalendarDay date) {
         WorkDay wd = getWdayByIndex(getWdayIndexByDate(date));
         calendar.remove(wd);
+    }
+
+    public void deleteAllWday(CalendarDay date) {
+        for (int i = calendar.size() - 1; i >= 0; --i) {
+            WorkDay wd = calendar.get(i);
+            if (wd.checkDate(date)) {
+                calendar.remove(wd);
+            }
+        }
     }
 
     public boolean hasWork(CalendarDay date) {
@@ -162,5 +187,14 @@ public class ShiftCalendar {
             }
         }
         return sortedCalendar;
+    }
+
+    private void sortShifts(List<Shift> shifts) {
+        Collections.sort(shifts, new Comparator<Shift>() {
+            @Override
+            public int compare(Shift s1, Shift s2) {
+                return s1.getStartTime().toInt() - s2.getStartTime().toInt();
+            }
+        });
     }
 }
