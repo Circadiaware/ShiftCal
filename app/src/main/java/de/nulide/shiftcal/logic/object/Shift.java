@@ -11,7 +11,8 @@ public class Shift {
     private ShiftTime startTime;
     private ShiftTime endTime;
     private int color;
-    private ShiftDayViewDecorator decorator;
+    private ShiftDayViewDecorator decoratorTop;
+    private ShiftDayViewDecorator decoratorBottom;
     private boolean toAlarm;
 
     public Shift(String name, String short_name, int id, ShiftTime startTime, ShiftTime endTime, int color, boolean toAlarm) {
@@ -81,12 +82,16 @@ public class Shift {
         this.endTime = endTime;
     }
 
-    public ShiftDayViewDecorator getDecorator() {
-        return decorator;
+    public ShiftDayViewDecorator getDecorator(boolean top) {
+        return top ? decoratorTop : decoratorBottom;
     }
 
-    public void setDecorator(ShiftDayViewDecorator decorator) {
-        this.decorator = decorator;
+    public void setDecorator(ShiftDayViewDecorator decorator, boolean top) {
+        if (top) {
+            this.decoratorTop = decorator;
+        } else {
+            this.decoratorBottom = decorator;
+        }
     }
 
     public boolean isToAlarm() {
