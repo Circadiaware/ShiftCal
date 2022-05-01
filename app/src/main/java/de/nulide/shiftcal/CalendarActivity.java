@@ -2,7 +2,6 @@ package de.nulide.shiftcal;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -36,14 +35,13 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 
-import java.time.temporal.ChronoField;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import de.nulide.shiftcal.logic.io.IO;
+import de.nulide.shiftcal.logic.object.CalendarDate;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
@@ -52,7 +50,6 @@ import de.nulide.shiftcal.settings.SettingsActivity;
 import de.nulide.shiftcal.settings.ThemeActivity;
 import de.nulide.shiftcal.sync.SyncHandler;
 import de.nulide.shiftcal.tools.ColorHelper;
-import de.nulide.shiftcal.tools.PermissionHandler;
 import de.nulide.shiftcal.ui.DarkModeDecorator;
 import de.nulide.shiftcal.ui.ShiftAdapter;
 import de.nulide.shiftcal.ui.ShiftDayFormatter;
@@ -74,7 +71,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     private static MaterialCalendarView calendar;
     private static ShiftDayFormatter shiftFormatter;
-    private static int year;                        // The current year, to know for faster loading. See updateCalendar()
+    private static CalendarDate day;                        // The current year, to know for faster loading. See updateCalendar()
 
     private static FloatingActionButton fabShiftSelector;
     private static TextView tvFabShiftSelector;
@@ -94,12 +91,12 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         con = this;
 
         int color = getResources().getColor(R.color.colorPrimary);
-        settings  = IO.readSettings(getFilesDir());
-        if(settings.isAvailable(Settings.SET_COLOR)){
+        settings = IO.readSettings(getFilesDir());
+        if (settings.isAvailable(Settings.SET_COLOR)) {
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
         ColorHelper.changeActivityColors(this, color);
-        if(settings.isAvailable(Settings.SET_DARK_MODE)){
+        if (settings.isAvailable(Settings.SET_DARK_MODE)) {
             ThemeActivity.setDarkMode(Integer.parseInt(settings.getSetting(Settings.SET_DARK_MODE)));
         }
 
@@ -124,7 +121,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         fabEdit.setOnClickListener(this);
 
         calendar = findViewById(R.id.calendarView);
-        if(settings.isAvailable(Settings.SET_START_OF_WEEK)) {
+        if (settings.isAvailable(Settings.SET_START_OF_WEEK)) {
             switch (Integer.parseInt(settings.getSetting(Settings.SET_START_OF_WEEK))) {
                 case 0:
                     calendar.state().edit()
@@ -169,7 +166,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
             }
         }
 
-                calendar.setDateSelected(CalendarDay.today(), true);
+        calendar.setDateSelected(CalendarDay.today(), true);
         calendar.setOnDateChangedListener(this);
         calendar.setSelectionColor(color);
         calendar.setOnMonthChangedListener(this);
@@ -188,7 +185,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     public void updateCalendar() {
         calendar.removeDecorators();
         calendar.addDecorator(new DarkModeDecorator(this));
-        ShiftCalendar sortedCalendar = sc.getYear(calendar.getSelectedDate());
+        ShiftCalendar sortedCalendar = sc.getSTimeFrame(calendar.getSelectedDate());
         for (int i = 0; i < sortedCalendar.getShiftsSize(); i++) {
             ShiftDayViewDecorator decoratorTop = new ShiftDayViewDecorator(sortedCalendar.getShiftByIndex(i), sortedCalendar, true);
             ShiftDayViewDecorator decoratorBottom = new ShiftDayViewDecorator(sortedCalendar.getShiftByIndex(i), sortedCalendar, false);
@@ -198,11 +195,11 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         calendar.addDecorator(new TodayDayViewDecorator());
         shiftFormatter = new ShiftDayFormatter(sortedCalendar);
         calendar.setDayFormatter(shiftFormatter);
-        year = calendar.getSelectedDate().getYear();
+        day = new CalendarDate(calendar.getSelectedDate());
     }
 
-    public void updateSpecificCalendar(int shiftIndex){
-        if(shiftIndex != -1) {
+    public void updateSpecificCalendar(int shiftIndex) {
+        if (shiftIndex != -1) {
             Shift shiftToUpdate = sc.getShiftByIndex(shiftIndex);
             for (int top = 0; top < 2; ++top) {
                 calendar.removeDecorator(shiftToUpdate.getDecorator(top == 1));
@@ -236,7 +233,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
             tvET.setText("");
         }
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        calendar.set(selectedDate.getYear(), selectedDate.getMonth()-1, selectedDate.getDay());
+        calendar.set(selectedDate.getYear(), selectedDate.getMonth() - 1, selectedDate.getDay());
         Integer weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
         tvWN.setText(weekOfYear.toString());
     }
@@ -258,8 +255,8 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
                 fabShiftSelector.setVisibility(View.VISIBLE);
                 tvFabShiftSelector.setVisibility(View.VISIBLE);
             }
-        } else if(view == fabShiftSelector) {
-            if(toEdit) {
+        } else if (view == fabShiftSelector) {
+            if (toEdit) {
                 LayoutInflater inflater = getLayoutInflater();
                 View dialoglayout = inflater.inflate(R.layout.dialog_shift_selector, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -272,13 +269,13 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
                 dialog = builder.create();
                 dialog.show();
             }
-        }else if (view == btnPopup) {
-            if(settings.isAvailable(Settings.SET_DARK_MODE)){
+        } else if (view == btnPopup) {
+            if (settings.isAvailable(Settings.SET_DARK_MODE)) {
                 int dm = Integer.parseInt(settings.getSetting(Settings.SET_DARK_MODE));
-                if(dm == ThemeActivity.DARK_MODE_ON){
+                if (dm == ThemeActivity.DARK_MODE_ON) {
                     fl.setBackgroundColor(Color.argb(200, 0, 0, 0));
 
-                }else{
+                } else {
                     fl.setBackgroundColor(Color.argb(200, 255, 255, 255));
                 }
             }
@@ -338,8 +335,8 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         fabShiftSelector.setVisibility(View.INVISIBLE);
         tvFabShiftSelector.setVisibility(View.INVISIBLE);
         int color = getResources().getColor(R.color.colorPrimary);
-        settings  = IO.readSettings(getFilesDir());
-        if(settings.isAvailable(Settings.SET_COLOR)){
+        settings = IO.readSettings(getFilesDir());
+        if (settings.isAvailable(Settings.SET_COLOR)) {
             color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
         }
         fabShiftSelector.setBackgroundTintList(ColorStateList.valueOf(color));
@@ -408,10 +405,15 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
-        if(date.getYear() != year) {
-            year = date.getYear();
+        CalendarDate min = new CalendarDate(date);
+        min.addMonth(-5);
+        CalendarDate max = new CalendarDate(date);
+        max.addMonth(5);
+        if (!day.inRange(min, max)) {
+            day = new CalendarDate(date);
             calendar.setSelectedDate(date);
             updateCalendar();
         }
     }
+
 }

@@ -44,4 +44,29 @@ public class CalendarDate {
     public void setDay(int day) {
         this.day = day;
     }
+
+    public void addMonth(int month){
+        this.month+= month;
+        if(this.month > 11){
+            this.month = this.month-12;
+            this.year+=1;
+        }
+        if(this.month < 0){
+            this.year-=1;
+            this.month = 12+this.month;
+        }
+    }
+
+    public int getCompareableNumber(){
+        return getYear()*10000000 + getMonth()*1000 + getDay()*10;
+    }
+
+    public boolean inRange(CalendarDate min, CalendarDate max){
+        if(this.getCompareableNumber() > min.getCompareableNumber()){
+            if(this.getCompareableNumber() < max.getCompareableNumber()){
+                return true;
+            }
+        }
+        return false;
+    }
 }

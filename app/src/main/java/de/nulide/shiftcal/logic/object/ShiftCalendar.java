@@ -176,14 +176,18 @@ public class ShiftCalendar {
         return -1;
     }
 
-    public ShiftCalendar getYear(CalendarDay day){
+    public ShiftCalendar getSTimeFrame(CalendarDay day){
         ShiftCalendar sortedCalendar = new ShiftCalendar();
         for(Shift s : shifts){
             sortedCalendar.addShift(s);
         }
+        CalendarDate min = new CalendarDate(day);
+        min.addMonth(-5);
+        CalendarDate max = new CalendarDate(day);
+        max.addMonth(5);
         for(WorkDay wday : calendar){
-            if(wday.getDate().getYear() == day.getYear()){
-                    sortedCalendar.addWday(wday);
+            if(wday.getDate().inRange(min, max)){
+                sortedCalendar.addWday(wday);
             }
         }
         return sortedCalendar;
