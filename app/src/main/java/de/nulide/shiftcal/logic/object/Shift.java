@@ -14,8 +14,9 @@ public class Shift {
     private ShiftDayViewDecorator decoratorTop;
     private ShiftDayViewDecorator decoratorBottom;
     private boolean toAlarm;
+    private boolean archieved;
 
-    public Shift(String name, String short_name, int id, ShiftTime startTime, ShiftTime endTime, int color, boolean toAlarm) {
+    public Shift(String name, String short_name, int id, ShiftTime startTime, ShiftTime endTime, int color, boolean toAlarm, boolean archieved) {
         this.name = name;
         this.short_name = short_name;
         this.id = id;
@@ -23,6 +24,8 @@ public class Shift {
         this.endTime = endTime;
         this.color = color;
         this.toAlarm = toAlarm;
+        this.archieved = archieved;
+
     }
 
     public Shift() {
@@ -101,5 +104,15 @@ public class Shift {
     public void setToAlarm(boolean toAlarm) {
         this.toAlarm = toAlarm;
     }
+
+    public void setArchieved(){
+        this.archieved = true;
+    }
+
+    public boolean isArchieved(){
+        return this.archieved;
+    }
+
+
 }
 

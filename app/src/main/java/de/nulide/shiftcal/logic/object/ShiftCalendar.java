@@ -7,6 +7,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.nulide.shiftcal.sync.CalendarController;
@@ -25,6 +26,12 @@ public class ShiftCalendar {
     }
 
     public List<Shift> getShiftList() {
+        List<Shift> shifts = new LinkedList<Shift>();
+        for( Shift s : this.shifts){
+            if(!s.isArchieved()){
+                shifts.add(s);
+            }
+        }
         return shifts;
     }
 

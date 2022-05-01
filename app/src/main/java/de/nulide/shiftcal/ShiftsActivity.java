@@ -86,6 +86,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
         menu.setHeaderTitle("Select The Action");
         menu.add(0, v.getId(), 0, "Edit");
         menu.add(0, v.getId(), 0, "Delete");
+        menu.add(0, v.getId(), 0, "Archieve");
     }
 
     @Override
@@ -102,7 +103,13 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
             IO.writeShiftCal(getFilesDir(), this, sc);
             SyncHandler.sync(this);
             updateShifts();
-        } else {
+        } else if (item.getTitle() == "Archieve") {
+            Shift shift = sc.getShiftByIndex(index);
+            shift.setArchieved();
+            sc.setShift(shift.getId(), shift);
+            IO.writeShiftCal(getFilesDir(), this, sc);
+            updateShifts();
+        }else{
             return false;
         }
         return true;

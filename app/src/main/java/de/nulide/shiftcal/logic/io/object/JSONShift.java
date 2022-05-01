@@ -9,11 +9,12 @@ public class JSONShift {
     private JSONShiftTime endTime;
     private int color;
     private boolean toAlarm;
+    private boolean archieved;
 
     public JSONShift() {
     }
 
-    public JSONShift(String name, String short_name, int id, JSONShiftTime startTime, JSONShiftTime endTime, int color, boolean toAlarm) {
+    public JSONShift(String name, String short_name, int id, JSONShiftTime startTime, JSONShiftTime endTime, int color, boolean toAlarm, boolean archieved) {
         this.name = name;
         this.short_name = short_name;
         this.id = id;
@@ -21,6 +22,7 @@ public class JSONShift {
         this.endTime = endTime;
         this.color = color;
         this.toAlarm = toAlarm;
+        this.archieved = archieved;
     }
 
     public String getName() {
@@ -77,5 +79,13 @@ public class JSONShift {
 
     public void setToAlarm(boolean toAlarm) {
         this.toAlarm = toAlarm;
+    }
+
+    public boolean isArchieved() {
+        return archieved;
+    }
+
+    public void setArchieved(boolean archieved) {
+        this.archieved = archieved;
     }
 }

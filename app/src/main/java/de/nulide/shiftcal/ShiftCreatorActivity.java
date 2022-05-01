@@ -110,9 +110,9 @@ public class ShiftCreatorActivity extends AppCompatActivity implements View.OnCl
             if (!name.isEmpty() && !sname.isEmpty()) {
                 Shift nS;
                 if(swAlarmForShift.isEnabled()) {
-                    nS = new Shift(name, sname, sc.getNextShiftId(), stStart, stEnd, ((ColorDrawable) btnCP.getBackground()).getColor(), swAlarmForShift.isChecked());
+                    nS = new Shift(name, sname, sc.getNextShiftId(), stStart, stEnd, ((ColorDrawable) btnCP.getBackground()).getColor(), swAlarmForShift.isChecked(), false);
                 }else{
-                    nS = new Shift(name, sname, sc.getNextShiftId(), stStart, stEnd, ((ColorDrawable) btnCP.getBackground()).getColor(), true);
+                    nS = new Shift(name, sname, sc.getNextShiftId(), stStart, stEnd, ((ColorDrawable) btnCP.getBackground()).getColor(), true, false);
                 }
                 if (toEditShift != -1) {
                     nS.setId(sc.getShiftById(toEditShift).getId());

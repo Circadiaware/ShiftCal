@@ -56,13 +56,13 @@ public class JSONFactory {
     public static JSONShift convertShiftToJSON(Shift s) {
         return new JSONShift(s.getName(), s.getShort_name(), s.getId(),
                 convertShiftTimeToJSON(s.getStartTime()), convertShiftTimeToJSON(s.getEndTime()),
-                s.getColor(), s.isToAlarm());
+                s.getColor(), s.isToAlarm(), s.isArchieved());
     }
 
     public static Shift convertJSONToShift(JSONShift ss) {
         return new Shift(ss.getName(), ss.getShort_name(), ss.getId(),
                 convertJSONToShiftTime(ss.getStartTime()), convertJSONToShiftTime(ss.getEndTime()),
-                ss.getColor(), ss.isToAlarm());
+                ss.getColor(), ss.isToAlarm(), ss.isArchieved());
     }
 
     public static JSONWorkDay convertWorkDayToJSON(WorkDay wd) {
