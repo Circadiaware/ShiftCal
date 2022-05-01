@@ -136,14 +136,15 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
                 btnTone.setEnabled(true);
                 settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(true).toString());
                 settings.setSetting(Settings.SET_ALARM_MINUTES, etMinutesAlarm.getText().toString());
+                IO.writeSettings(getFilesDir(), this, settings);
                 alarm.setAlarm(this);
             } else {
                 etMinutesAlarm.setEnabled(false);
                 btnTone.setEnabled(false);
                 settings.setSetting(Settings.SET_ALARM_ON_OFF, new Boolean(false).toString());
+                IO.writeSettings(getFilesDir(), this, settings);
                 alarm.removeAll(this);
             }
-            IO.writeSettings(getFilesDir(), this, settings);
         }
     }
 }
