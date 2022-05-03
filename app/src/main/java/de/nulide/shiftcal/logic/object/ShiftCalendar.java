@@ -5,8 +5,10 @@ import android.content.ContentResolver;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -207,5 +209,58 @@ public class ShiftCalendar {
                 return s1.getStartTime().toInt() - s2.getStartTime().toInt();
             }
         });
+    }
+
+    public WorkDay getUpcomingShift(Date nowDate, Boolean respectToAlarm){
+        Calendar now = Calendar.getInstance();
+        now.setTime(nowDate);
+
+        WorkDay nearest = null;
+        for(WorkDay wday : calendar){
+            if(wday.getDate().getYear() > now.get(Calendar.YEAR) || (wday.getDate().getYear() == now.get(Calendar.YEAR) && wday.getDate().getMonth() > now.get(Calendar.MONTH)) || (wday.getDate().getYear() == now.get(Calendar.YEAR) && wday.getDate().getMonth() == now.get(Calendar.MONTH) && wday.getDate().getDay() >= now.get(Calendar.DAY_OF_MONTH))){
+                Shift shift = getShiftById(wday.getShift());
+                Boolean pass = true;
+                if(respectToAlarm){
+                    if(!shift.isToAlarm()){
+                        pass = false;
+                    }
+                }
+                if(pass && shift.getStartTime().getHour() > now.get(Calendar.HOUR) ||
+                        (shift.getStartTime().getHour() == now.get(Calendar.HOUR) && shift.getStartTime().getMinute() > now.get(Calendar.MINUTE))){
+                    if(nearest == null){
+                        nearest = wday;
+                    }else{
+                        if(wday.getDate().getYear() < nearest.getDate().getYear() || (wday.getDate().getYear() == nearest.getDate().getYear() && wday.getDate().getMonth() < nearest.getDate().getMonth()) || (wday.getDate().getYear() == nearest.getDate().getYear() && wday.getDate().getMonth() == nearest.getDate().getMonth() && wday.getDate().getDay() < nearest.getDate().getDay())) {
+                            nearest = wday;
+                        }else if((wday.getDate().getYear() == nearest.getDate().getYear() && wday.getDate().getMonth() == nearest.getDate().getMonth() && wday.getDate().getDay() < nearest.getDate().getDay())){
+                            Shift nshift = getShiftById(nearest.getShift());
+                            if(shift.getStartTime().getHour() < nshift.getStartTime().getHour() ||
+                                    (shift.getStartTime().getHour() == nshift.getStartTime().getHour() && shift.getStartTime().getMinute() < nshift.getStartTime().getMinute())){
+                                nearest = wday;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return nearest;
+    }
+
+    public WorkDay getRunningShift(Date nowDate){
+        Calendar now = Calendar.getInstance();
+        now.setTime(nowDate);
+        for(WorkDay wday: calendar){
+            if(wday.getDate().getYear() == now.get(Calendar.YEAR) && wday.getDate().getMonth() == now.get(Calendar.MONTH) && wday.getDate().getDay() == now.get(Calendar.DAY_OF_MONTH)){
+                Shift shift = getShiftById(wday.getShift());
+                if((shift.getStartTime().getHour() == now.get(Calendar.HOUR) && shift.getStartTime().getMinute() < now.get(Calendar.MINUTE))
+                    || (shift.getStartTime().getHour() < now.get(Calendar.HOUR))){
+                    if(shift.getEndTime().getHour() > now.get(Calendar.HOUR) ||
+                            (shift.getEndTime().getHour() == now.get(Calendar.HOUR) && shift.getEndTime().getMinute() > now.get(Calendar.MINUTE))){
+                        return wday;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

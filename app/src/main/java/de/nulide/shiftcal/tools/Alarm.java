@@ -22,6 +22,9 @@ public class Alarm {
     File f;
     private Settings settings;
 
+    private int ALARM_ID = 35;
+    private int DND_ID = 45;
+
     public Alarm(File f) {
         this.f = f;
     }
@@ -32,47 +35,30 @@ public class Alarm {
             if (settings.isAvailable(Settings.SET_ALARM_ON_OFF) &&settings.isAvailable(Settings.SET_ALARM_MINUTES)) {
                 if(new Boolean(settings.getSetting(Settings.SET_ALARM_ON_OFF))) {
                     Calendar today = Calendar.getInstance();
-                    Calendar nearest = null;
-                    int id = 0;
                     ShiftCalendar sc = IO.readShiftCal(f);
                     AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
                     int minutes = Integer.parseInt(settings.getSetting(Settings.SET_ALARM_MINUTES));
-                    for (int i = 0; i < sc.getCalendarSize(); i++) {
-                        WorkDay d = sc.getWdayByIndex(i);
-                        if (sc.getShiftById(d.getShift()).isToAlarm()) {
-                            Calendar cal = Calendar.getInstance();
-                            cal.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getStartTime().getHour(), sc.getShiftById(d.getShift()).getStartTime().getMinute(), 0);
-                            cal.add(Calendar.MINUTE, -minutes);
-                            if (nearest == null) {
-                                if (today.getTimeInMillis() < cal.getTimeInMillis()) {
-                                    nearest = cal;
-                                    id = i;
-                                }
-                            } else if (nearest.getTimeInMillis() > cal.getTimeInMillis() && cal.getTimeInMillis() > today.getTimeInMillis()) {
-                                nearest = cal;
-                                id = i;
-                            }
-                            Intent intent = new Intent(t, AlarmReceiver.class);
-                            PendingIntent pi = PendingIntent.getBroadcast(t, i, intent, 0);
-                            mgr.cancel(pi);
-                        }
-                    }
+                    today.add(Calendar.MINUTE, -minutes);
+                    WorkDay nearest = sc.getUpcomingShift(today.getTime(), true);
                     if(nearest == null){
                         return;
                     }
+                    Calendar nearestCalendar = Calendar.getInstance();
+                    nearestCalendar.set(nearest.getDate().getYear(), nearest.getDate().getMonth() - 1, nearest.getDate().getDay(), sc.getShiftById(nearest.getShift()).getStartTime().getHour(), sc.getShiftById(nearest.getShift()).getStartTime().getMinute(), 0);
+
                     Intent intent = new Intent(t, AlarmReceiver.class);
-                    intent.putExtra(EXT_SHIFT, sc.getWdayByIndex(id).getShift());
-                    PendingIntent pi = PendingIntent.getBroadcast(t, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    intent.putExtra(EXT_SHIFT, nearest.getShift());
+                    PendingIntent pi = PendingIntent.getBroadcast(t, ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         AlarmManager.AlarmClockInfo ac =
-                                new AlarmManager.AlarmClockInfo(nearest.getTimeInMillis(),
+                                new AlarmManager.AlarmClockInfo(nearestCalendar.getTimeInMillis(),
                                         pi);
                         mgr.setAlarmClock(ac, pi);
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            mgr.setExact(AlarmManager.RTC_WAKEUP, nearest.getTimeInMillis(), pi);
+                            mgr.setExact(AlarmManager.RTC_WAKEUP, nearestCalendar.getTimeInMillis(), pi);
                         } else {
-                            mgr.set(AlarmManager.RTC_WAKEUP, nearest.getTimeInMillis(), pi);
+                            mgr.set(AlarmManager.RTC_WAKEUP, nearestCalendar.getTimeInMillis(), pi);
                         }
                     }
                 }
@@ -81,60 +67,37 @@ public class Alarm {
             e.printStackTrace();
             settings.setSetting(Settings.SET_ALARM_MINUTES, "0");
         }
-        setDNDAlarm(t);
     }
 
     public void setDNDAlarm(Context t){
         settings = IO.readSettings(f);
         if(settings.isAvailable(Settings.SET_DND)){
-            if(new Boolean(settings.getSetting(Settings.SET_DND))){
-                Calendar today = Calendar.getInstance();
-                Calendar nearest = null;
-                Calendar running = null;
-                int idn = -1;
-                int idr = -1;
+            if(new Boolean(settings.getSetting(Settings.SET_DND))) {
                 ShiftCalendar sc = IO.readShiftCal(f);
-                for (int i = 0; i < sc.getCalendarSize(); i++) {
-                    WorkDay d = sc.getWdayByIndex(i);
-                    if (sc.getShiftById(d.getShift()).isToAlarm()) {
-                        Calendar caln = Calendar.getInstance();
-                        Calendar calr = Calendar.getInstance();
-                        caln.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getStartTime().getHour(), sc.getShiftById(d.getShift()).getStartTime().getMinute(), 0);
-                        calr.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getEndTime().getHour(), sc.getShiftById(d.getShift()).getEndTime().getMinute(), 0);
-                        if (nearest == null) {
-                            if (today.getTimeInMillis() < caln.getTimeInMillis()) {
-                                nearest = caln;
-                                idn = i;
-                            }
-                        } else if (nearest.getTimeInMillis() > caln.getTimeInMillis() && caln.getTimeInMillis() > today.getTimeInMillis()) {
-                            nearest = caln;
-                            idn = i;
-                        }
-                        if (running == null) {
-                            if (today.getTimeInMillis() < calr.getTimeInMillis() && caln.getTimeInMillis() < today.getTimeInMillis()) {
-                                running = calr;
-                                idr = i;
-                            }
-                        }
-                    }
-                }
+                Calendar today = Calendar.getInstance();
+                WorkDay running = sc.getRunningShift(today.getTime());
                 Intent intent = new Intent(t, DNDReceiver.class);
                 AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
 
-                if(idr != -1){
-                    Intent oldIntent = new Intent(t, DNDReceiver.class);
-                    oldIntent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.START);
-                    PendingIntent oldpi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, oldIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mgr.cancel(oldpi);
-                    intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.STOP);
-                    PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    createSilentAlarm(pi, intent, mgr, running);
-                }else {
-                    if(nearest != null) {
+                if (running == null) {
+                    WorkDay nearest = sc.getUpcomingShift(today.getTime(), false);
+                    if (nearest == null) {
+                        return;
+                    } else {
+                        Calendar nearestCal = Calendar.getInstance();
+                        nearestCal.set(running.getDate().getYear(), running.getDate().getMonth() - 1, running.getDate().getDay(), sc.getShiftById(running.getShift()).getStartTime().getHour(), sc.getShiftById(running.getShift()).getStartTime().getMinute(), 0);
+
                         intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.START);
                         PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        createSilentAlarm(pi, intent, mgr, nearest);
+                        createSilentAlarm(pi, intent, mgr, nearestCal);
                     }
+                } else {
+                    Calendar runningCal = Calendar.getInstance();
+                    runningCal.set(running.getDate().getYear(), running.getDate().getMonth() - 1, running.getDate().getDay(), sc.getShiftById(running.getShift()).getEndTime().getHour(), sc.getShiftById(running.getShift()).getEndTime().getMinute() + 1, 0);
+
+                    intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.STOP);
+                    PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    createSilentAlarm(pi, intent, mgr, runningCal);
                 }
             }
         }

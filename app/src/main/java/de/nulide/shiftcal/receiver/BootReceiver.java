@@ -12,6 +12,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Alarm alarm = new Alarm(context.getFilesDir());
         alarm.setAlarm(context);
+        alarm.setDNDAlarm(context);
     }
 
 }
