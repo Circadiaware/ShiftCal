@@ -130,9 +130,11 @@ public class Alarm {
                     PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     createSilentAlarm(pi, intent, mgr, running);
                 }else {
-                    intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.START);
-                    PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    createSilentAlarm(pi, intent, mgr, nearest);
+                    if(nearest != null) {
+                        intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.START);
+                        PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        createSilentAlarm(pi, intent, mgr, nearest);
+                    }
                 }
             }
         }
