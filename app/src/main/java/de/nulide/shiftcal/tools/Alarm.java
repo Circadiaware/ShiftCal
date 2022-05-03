@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.File;
 import java.util.Calendar;
@@ -12,6 +13,7 @@ import java.util.Calendar;
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
+import de.nulide.shiftcal.logic.object.TimeFactory;
 import de.nulide.shiftcal.logic.object.WorkDay;
 import de.nulide.shiftcal.receiver.AlarmReceiver;
 import de.nulide.shiftcal.receiver.DNDReceiver;
@@ -37,14 +39,14 @@ public class Alarm {
                     Calendar today = Calendar.getInstance();
                     ShiftCalendar sc = IO.readShiftCal(f);
                     AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
-                    int minutes = Integer.parseInt(settings.getSetting(Settings.SET_ALARM_MINUTES));
-                    today.add(Calendar.MINUTE, -minutes);
-                    WorkDay nearest = sc.getUpcomingShift(today.getTime(), true);
+                    Integer minutes = Integer.parseInt(settings.getSetting(Settings.SET_ALARM_MINUTES));
+                    WorkDay nearest = sc.getUpcomingShift(TimeFactory.convertCalendarToCDateTime(today), true, minutes);
                     if(nearest == null){
                         return;
                     }
                     Calendar nearestCalendar = Calendar.getInstance();
-                    nearestCalendar.set(nearest.getDate().getYear(), nearest.getDate().getMonth() - 1, nearest.getDate().getDay(), sc.getShiftById(nearest.getShift()).getStartTime().getHour(), sc.getShiftById(nearest.getShift()).getStartTime().getMinute(), 0);
+                    nearestCalendar.set(nearest.getDate().getYear(), nearest.getDate().getMonth()-1, nearest.getDate().getDay(), sc.getShiftById(nearest.getShift()).getStartTime().getHour(), sc.getShiftById(nearest.getShift()).getStartTime().getMinute(), 0);
+                    nearestCalendar.add(Calendar.MINUTE, -minutes);
 
                     Intent intent = new Intent(t, AlarmReceiver.class);
                     intent.putExtra(EXT_SHIFT, nearest.getShift());
@@ -75,12 +77,12 @@ public class Alarm {
             if(new Boolean(settings.getSetting(Settings.SET_DND))) {
                 ShiftCalendar sc = IO.readShiftCal(f);
                 Calendar today = Calendar.getInstance();
-                WorkDay running = sc.getRunningShift(today.getTime());
+                WorkDay running = sc.getRunningShift(TimeFactory.convertCalendarToCDateTime(today));
                 Intent intent = new Intent(t, DNDReceiver.class);
                 AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
 
                 if (running == null) {
-                    WorkDay nearest = sc.getUpcomingShift(today.getTime(), false);
+                    WorkDay nearest = sc.getUpcomingShift(TimeFactory.convertCalendarToCDateTime(today), false, 0);
                     if (nearest == null) {
                         return;
                     } else {

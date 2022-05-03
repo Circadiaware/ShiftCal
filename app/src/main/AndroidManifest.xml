@@ -64,8 +64,14 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".receiver.AlarmReceiver" />
-        <receiver android:name=".receiver.DNDReceiver" />
+        <receiver
+            android:name=".receiver.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+        <receiver
+            android:name=".receiver.DNDReceiver"
+            android:enabled="true"
+            android:exported="true" />
         <receiver
             android:name=".receiver.BootReceiver"
             android:directBootAware="true"

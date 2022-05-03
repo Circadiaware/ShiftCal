@@ -1,19 +1,12 @@
 package de.nulide.shiftcal.logic.object;
 
-import android.content.ContentResolver;
-
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.nulide.shiftcal.sync.CalendarController;
-import de.nulide.shiftcal.sync.EventController;
 
 public class ShiftCalendar {
 
@@ -211,53 +204,45 @@ public class ShiftCalendar {
         });
     }
 
-    public WorkDay getUpcomingShift(Date nowDate, Boolean respectToAlarm){
-        Calendar now = Calendar.getInstance();
-        now.setTime(nowDate);
-
+    public WorkDay getUpcomingShift(CDateTime now, Boolean respectToAlarm, int preMinutes) {
         WorkDay nearest = null;
-        for(WorkDay wday : calendar){
-            if(wday.getDate().getYear() > now.get(Calendar.YEAR) || (wday.getDate().getYear() == now.get(Calendar.YEAR) && wday.getDate().getMonth() > now.get(Calendar.MONTH)) || (wday.getDate().getYear() == now.get(Calendar.YEAR) && wday.getDate().getMonth() == now.get(Calendar.MONTH) && wday.getDate().getDay() >= now.get(Calendar.DAY_OF_MONTH))){
-                Shift shift = getShiftById(wday.getShift());
-                Boolean pass = true;
-                if(respectToAlarm){
-                    if(!shift.isToAlarm()){
-                        pass = false;
-                    }
-                }
-                if(pass && shift.getStartTime().getHour() > now.get(Calendar.HOUR) ||
-                        (shift.getStartTime().getHour() == now.get(Calendar.HOUR) && shift.getStartTime().getMinute() > now.get(Calendar.MINUTE))){
-                    if(nearest == null){
+        for (WorkDay wday : calendar) {
+            CDateTime date = TimeFactory.convertCalendarDateToCDateTime(wday.getDate());
+            Shift shift = getShiftById(wday.getShift());
+            CDateTime dateTime = TimeFactory.combineCDateTimeWithShiftTime(date, shift.getStartTime());
+            dateTime.addMinute(-preMinutes);
+            //Check if day is after or today
+
+            //Check if only shifts that can alarm shall be searched
+            if (!respectToAlarm || shift.isToAlarm()) {
+
+                if (dateTime.newerThan(now)) {
+                    if (nearest == null) {
                         nearest = wday;
-                    }else{
-                        if(wday.getDate().getYear() < nearest.getDate().getYear() || (wday.getDate().getYear() == nearest.getDate().getYear() && wday.getDate().getMonth() < nearest.getDate().getMonth()) || (wday.getDate().getYear() == nearest.getDate().getYear() && wday.getDate().getMonth() == nearest.getDate().getMonth() && wday.getDate().getDay() < nearest.getDate().getDay())) {
+                    } else {
+                        Shift nshift = getShiftById(nearest.getShift());
+                        CDateTime nDate = TimeFactory.combineCDateTimeWithShiftTime(TimeFactory.convertCalendarDateToCDateTime(nearest.getDate()), nshift.getStartTime());
+                        nDate.addMinute(preMinutes);
+                        if (nDate.newerThan(dateTime)) {
                             nearest = wday;
-                        }else if((wday.getDate().getYear() == nearest.getDate().getYear() && wday.getDate().getMonth() == nearest.getDate().getMonth() && wday.getDate().getDay() < nearest.getDate().getDay())){
-                            Shift nshift = getShiftById(nearest.getShift());
-                            if(shift.getStartTime().getHour() < nshift.getStartTime().getHour() ||
-                                    (shift.getStartTime().getHour() == nshift.getStartTime().getHour() && shift.getStartTime().getMinute() < nshift.getStartTime().getMinute())){
-                                nearest = wday;
-                            }
                         }
                     }
                 }
+
             }
         }
         return nearest;
     }
 
-    public WorkDay getRunningShift(Date nowDate){
-        Calendar now = Calendar.getInstance();
-        now.setTime(nowDate);
-        for(WorkDay wday: calendar){
-            if(wday.getDate().getYear() == now.get(Calendar.YEAR) && wday.getDate().getMonth() == now.get(Calendar.MONTH) && wday.getDate().getDay() == now.get(Calendar.DAY_OF_MONTH)){
+    public WorkDay getRunningShift(CDateTime now) {
+        for (WorkDay wday : calendar) {
+            CDateTime date = TimeFactory.convertCalendarDateToCDateTime(wday.getDate());
+            if (date.isSameDay(now)) {
                 Shift shift = getShiftById(wday.getShift());
-                if((shift.getStartTime().getHour() == now.get(Calendar.HOUR) && shift.getStartTime().getMinute() < now.get(Calendar.MINUTE))
-                    || (shift.getStartTime().getHour() < now.get(Calendar.HOUR))){
-                    if(shift.getEndTime().getHour() > now.get(Calendar.HOUR) ||
-                            (shift.getEndTime().getHour() == now.get(Calendar.HOUR) && shift.getEndTime().getMinute() > now.get(Calendar.MINUTE))){
-                        return wday;
-                    }
+                CDateTime sdateTime = TimeFactory.combineCDateTimeWithShiftTime(date, shift.getStartTime());
+                CDateTime edateTime = TimeFactory.combineCDateTimeWithShiftTime(date, shift.getStartTime());
+                if (now.newerThan(sdateTime) && edateTime.newerThan(now)) {
+                    return wday;
                 }
             }
         }
