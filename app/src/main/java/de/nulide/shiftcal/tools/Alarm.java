@@ -25,7 +25,8 @@ public class Alarm {
     private Settings settings;
 
     private int ALARM_ID = 35;
-    private int DND_ID = 45;
+    private int DND_ID_START = 45;
+    private int DND_ID_STOP = 46;
 
     public Alarm(File f) {
         this.f = f;
@@ -78,22 +79,30 @@ public class Alarm {
                 ShiftCalendar sc = IO.readShiftCal(f);
                 Calendar today = Calendar.getInstance();
                 WorkDay toDND = sc.getRunningShift(TimeFactory.convertCalendarToCDateTime(today));
-                Intent intent = new Intent(t, DNDReceiver.class);
-                AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
 
                 if (toDND == null) {
                     toDND = sc.getUpcomingShift(TimeFactory.convertCalendarToCDateTime(today), false, 0);
                     if (toDND == null) {
                         return;
                     }
-                } else {
-                    Calendar runningCal = Calendar.getInstance();
-                    runningCal.set(toDND.getDate().getYear(), toDND.getDate().getMonth() - 1, toDND.getDate().getDay(), sc.getShiftById(toDND.getShift()).getEndTime().getHour(), sc.getShiftById(toDND.getShift()).getEndTime().getMinute() + 1, 0);
-
-                    intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.START);
-                    PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    createSilentAlarm(pi, intent, mgr, runningCal);
                 }
+                Calendar calStart = Calendar.getInstance();
+                calStart.set(toDND.getDate().getYear(), toDND.getDate().getMonth() - 1, toDND.getDate().getDay(), sc.getShiftById(toDND.getShift()).getStartTime().getHour(), sc.getShiftById(toDND.getShift()).getStartTime().getMinute(), 0);
+
+                Calendar calStop = Calendar.getInstance();
+                calStop.set(toDND.getDate().getYear(), toDND.getDate().getMonth() - 1, toDND.getDate().getDay(), sc.getShiftById(toDND.getShift()).getEndTime().getHour(), sc.getShiftById(toDND.getShift()).getEndTime().getMinute(), 0);
+
+                AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
+
+                Intent intentStart = new Intent(t, DNDReceiver.class);
+                intentStart.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.START);
+                PendingIntent pisa = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_START, intentStart, PendingIntent.FLAG_UPDATE_CURRENT);
+                createSilentAlarm(pisa, intentStart, mgr, calStart);
+
+                Intent intentStop = new Intent(t, DNDReceiver.class);
+                intentStop.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.STOP);
+                PendingIntent piso = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_START, intentStop, PendingIntent.FLAG_UPDATE_CURRENT);
+                createSilentAlarm(piso, intentStop, mgr, calStop);
             }
         }
     }
@@ -127,7 +136,9 @@ public class Alarm {
                 mgr.cancel(pi);
             }
             Intent intent = new Intent(t, DNDReceiver.class);
-            PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_START, intent, PendingIntent.FLAG_ONE_SHOT);
+            mgr.cancel(pi);
+            pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_STOP, intent, PendingIntent.FLAG_ONE_SHOT);
             mgr.cancel(pi);
         } catch (Exception e) {
             e.printStackTrace();

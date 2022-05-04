@@ -15,7 +15,8 @@ import de.nulide.shiftcal.tools.Alarm;
 
 public class DNDReceiver extends BroadcastReceiver {
 
-    public static final int DND_ID = 999999;
+    public static final int DND_ID_START = 9999991;
+    public static final int DND_ID_STOP = 9999990;
     public static final String DND_START_STOP = "DNDSS";
     public static final int START = 1;
     public static final int STOP = 0;
