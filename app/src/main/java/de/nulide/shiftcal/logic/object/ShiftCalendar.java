@@ -86,10 +86,6 @@ public class ShiftCalendar {
         }
     }
 
-    public void deleteShiftByIndex(int i) {
-        shifts.remove(i);
-    }
-
     public void setShift(int id, Shift s) {
         for (int i = 0; i < shifts.size(); i++) {
             if (shifts.get(i).getId() == id) {
@@ -166,16 +162,6 @@ public class ShiftCalendar {
             }
         }
         return false;
-    }
-
-    public int getShiftIndexByDate(CalendarDay day) {
-        Shift s = getShiftByDate(day);
-        for (int i = 0; i < shifts.size(); i++){
-            if(shifts.get(i).getId() == s.getId()){
-                return i;
-            }
-        }
-        return -1;
     }
 
     public ShiftCalendar getSTimeFrame(CalendarDay day){

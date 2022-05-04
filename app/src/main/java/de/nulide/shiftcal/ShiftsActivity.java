@@ -28,6 +28,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
 
     static ShiftCalendar sc;
     private ListView listViewShifts;
+    private ArrayList<Shift> shifts;
 
     private FloatingActionButton fabAddShift;
 
@@ -62,7 +63,8 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
 
     public void updateShifts() {
         sc = IO.readShiftCal(getFilesDir());
-        ShiftAdapter adapter = new ShiftAdapter(this, new ArrayList<Shift>(sc.getShiftList()));
+        shifts = new ArrayList<>(sc.getShiftList());
+        ShiftAdapter adapter = new ShiftAdapter(this, shifts);
         listViewShifts.setAdapter(adapter);
     }
 
@@ -76,7 +78,7 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Intent myIntent = new Intent(this, ShiftCreatorActivity.class);
-        myIntent.putExtra("toedit", sc.getShiftByIndex(i).getId());
+        myIntent.putExtra("toedit", shifts.get(i).getId());
         startActivity(myIntent);
     }
 
@@ -94,16 +96,16 @@ public class ShiftsActivity extends AppCompatActivity implements View.OnClickLis
         int index = info.position;
         if (item.getTitle() == "Edit") {
             Intent myIntent = new Intent(this, ShiftCreatorActivity.class);
-            myIntent.putExtra("toedit", sc.getShiftByIndex(index).getId());
+            myIntent.putExtra("toedit", shifts.get(index).getId());
             startActivity(myIntent);
         } else if (item.getTitle() == "Delete") {
-            sc.deleteWorkDaysWithShift(sc.getShiftByIndex(index).getId());
-            sc.deleteShiftByIndex(index);
+            sc.deleteWorkDaysWithShift(shifts.get(index).getId());
+            sc.deleteShift(shifts.get(index).getId());
             IO.writeShiftCal(getFilesDir(), this, sc);
             SyncHandler.sync(this);
             updateShifts();
         } else if (item.getTitle() == "Archieve") {
-            Shift shift = sc.getShiftByIndex(index);
+            Shift shift = shifts.get(index);
             shift.setArchieved();
             sc.setShift(shift.getId(), shift);
             IO.writeShiftCal(getFilesDir(), this, sc);

@@ -77,6 +77,7 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     private static TextView tvFabShiftSelector;
     private static FloatingActionButton fabEdit;
     private static boolean toEdit = false;
+    private ArrayList<Shift> shifts;
     private int shiftID = -1;
 
 
@@ -202,9 +203,9 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         day = new CalendarDate(calendar.getSelectedDate());
     }
 
-    public void updateSpecificCalendar(int shiftIndex) {
-        if (shiftIndex != -1) {
-            Shift shiftToUpdate = sc.getShiftByIndex(shiftIndex);
+    public void updateSpecificCalendar(int sid) {
+        if (sid != -1) {
+            Shift shiftToUpdate = sc.getShiftById(sid);
             for (int top = 0; top < 2; ++top) {
                 calendar.removeDecorator(shiftToUpdate.getDecorator(top == 1));
                 ShiftDayViewDecorator decorator = new ShiftDayViewDecorator(shiftToUpdate, sc, top == 1);
@@ -265,9 +266,10 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
                 View dialoglayout = inflater.inflate(R.layout.dialog_shift_selector, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 ListView listViewShifts = (ListView) dialoglayout;
-                ShiftAdapter adapter = new ShiftAdapter(this, new ArrayList<Shift>(sc.getShiftList()));
+                shifts = new ArrayList<Shift>(sc.getShiftList());
+                shifts.add(new Shift("Delete", "D", -2, null, null, Color.RED, true, false));
+                ShiftAdapter adapter = new ShiftAdapter(this, shifts);
                 listViewShifts.setAdapter(adapter);
-                adapter.add(new Shift("Delete", "D", -1, null, null, Color.RED, true, false));
                 listViewShifts.setOnItemClickListener(this);
                 builder.setView(dialoglayout);
                 dialog = builder.create();
@@ -292,33 +294,29 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
 
-
-        int shiftIndexToUpdate = -1;
         if (toEdit) {
             if (shiftID != -1) {
                 CalendarDay csd = calendar.getSelectedDate();
-                if (shiftID < sc.getShiftsSize()) {
+                if (shiftID != -2) {
                     List<Shift> existingShifts = sc.getShiftsByDate(csd);
                     if (existingShifts.size() == 0) {
-                        sc.addWday(new WorkDay(csd, sc.getShiftByIndex(shiftID).getId()));
+                        sc.addWday(new WorkDay(csd, shiftID));
                     } else if (existingShifts.size() == 1) {
                         if (existingShifts.get(0).getId() == shiftID) {
                             sc.deleteWday(csd);
                         }
-                        sc.addWday(new WorkDay(csd, sc.getShiftByIndex(shiftID).getId()));
+                        sc.addWday(new WorkDay(csd, shiftID));
                     } else {
                         // for simplicity, just delete all existing shifts and add the selected one.
                         sc.deleteAllWday(csd);
-                        sc.addWday(new WorkDay(csd, sc.getShiftByIndex(shiftID).getId()));
+                        sc.addWday(new WorkDay(csd, shiftID));
                     }
-                    shiftIndexToUpdate = shiftID;
                 } else {
                     if (sc.hasWork(csd)) {
-                        shiftIndexToUpdate = sc.getShiftIndexByDate(date);
                         sc.deleteAllWday(csd);
                     }
                 }
-                updateSpecificCalendar(shiftIndexToUpdate);
+                updateSpecificCalendar(shiftID);
                 updateTextView();
             }
         } else {
@@ -352,13 +350,15 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        shiftID = i;
-        if (i < sc.getShiftsSize()) {
-            Shift s = sc.getShiftByIndex(i);
+        shiftID = shifts.get(i).getId();
+        if (i != -2) {
+            Shift s = shifts.get(i);
+            shiftID = s.getId();
             fabShiftSelector.setBackgroundTintList(ColorStateList.valueOf(s.getColor()));
             fabShiftSelector.setBackgroundColor(s.getColor());
             tvFabShiftSelector.setText(s.getShort_name());
         } else {
+            shiftID = -2;
             fabShiftSelector.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
             fabShiftSelector.setBackgroundColor(Color.RED);
             tvFabShiftSelector.setText("D");
