@@ -2,13 +2,10 @@ package de.nulide.shiftcal.sync;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;

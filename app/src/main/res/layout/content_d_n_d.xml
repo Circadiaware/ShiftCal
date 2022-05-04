@@ -7,12 +7,12 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginBottom="5mm"
-        android:padding="1mm"
-        tools:ignore="MissingConstraints"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5mm"
+        android:orientation="vertical"
+        android:padding="1mm"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:layout_width="match_parent"
@@ -22,8 +22,8 @@
 
         <Switch
             android:id="@+id/swDND"
-            android:layout_margin="1mm"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="1mm" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

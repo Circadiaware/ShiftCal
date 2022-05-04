@@ -1,19 +1,18 @@
 package de.nulide.shiftcal.settings;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import de.nulide.shiftcal.R;
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.sync.CalendarController;
-import de.nulide.shiftcal.sync.EventController;
 import de.nulide.shiftcal.sync.SyncHandler;
 import de.nulide.shiftcal.tools.ColorHelper;
 import de.nulide.shiftcal.tools.PermissionHandler;

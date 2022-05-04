@@ -22,7 +22,6 @@ import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.sync.SyncHandler;
 import de.nulide.shiftcal.tools.ColorHelper;
-import de.nulide.shiftcal.tools.PermissionHandler;
 import de.nulide.shiftcal.ui.ShiftAdapter;
 
 public class ShiftsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {

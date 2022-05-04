@@ -2,8 +2,6 @@ package de.nulide.shiftcal.sync;
 
 import android.content.Context;
 
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-
 import de.nulide.shiftcal.R;
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;

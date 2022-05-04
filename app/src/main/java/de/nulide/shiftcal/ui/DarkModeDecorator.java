@@ -6,8 +6,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.text.style.ForegroundColorSpan;
 
-import androidx.appcompat.app.AppCompatDelegate;
-
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;

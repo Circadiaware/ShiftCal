@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -10,8 +8,8 @@
     <androidx.gridlayout.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="1mm"
         android:layout_marginBottom="5mm"
+        android:padding="1mm"
         app:columnCount="2">
 
         <TextView
@@ -24,12 +22,12 @@
 
         <Spinner
             android:id="@+id/sDarkMode"
-            android:textColor="?android:attr/textColorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1mm"
             android:layout_weight="1"
-            android:gravity="right" />
+            android:gravity="right"
+            android:textColor="?android:attr/textColorPrimary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -56,12 +54,12 @@
 
         <Spinner
             android:id="@+id/sFirstDayOfWeek"
-            android:textColor="?android:attr/textColorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1mm"
             android:layout_weight="1"
-            android:gravity="right" />
+            android:gravity="right"
+            android:textColor="?android:attr/textColorPrimary" />
 
 
     </androidx.gridlayout.widget.GridLayout>

@@ -1,9 +1,5 @@
 package de.nulide.shiftcal.settings;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +7,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import de.nulide.shiftcal.R;
 import de.nulide.shiftcal.logic.io.IO;

@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import de.nulide.shiftcal.R;
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
-import de.nulide.shiftcal.settings.AlarmActivity;
-import de.nulide.shiftcal.settings.ThemeActivity;
 import de.nulide.shiftcal.tools.ColorHelper;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {

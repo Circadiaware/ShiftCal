@@ -9,8 +9,6 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 
-import de.nulide.shiftcal.logic.io.IO;
-import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.tools.Alarm;
 
 public class DNDReceiver extends BroadcastReceiver {

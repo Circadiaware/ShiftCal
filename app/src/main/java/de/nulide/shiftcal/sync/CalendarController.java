@@ -1,7 +1,5 @@
 package de.nulide.shiftcal.sync;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;

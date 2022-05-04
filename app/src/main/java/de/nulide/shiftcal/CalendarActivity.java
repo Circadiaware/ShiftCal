@@ -33,7 +33,6 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Calendar;

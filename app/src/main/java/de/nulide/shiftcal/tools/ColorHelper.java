@@ -1,6 +1,5 @@
 package de.nulide.shiftcal.tools;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
