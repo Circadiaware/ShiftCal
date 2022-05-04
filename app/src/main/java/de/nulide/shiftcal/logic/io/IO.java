@@ -121,6 +121,7 @@ public class IO {
         }
 
         alarm.setAlarm(c);
+        alarm.setDNDAlarm(c);
     }
 
     public static void writeJSON(File file, String json){

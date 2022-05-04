@@ -28,6 +28,9 @@ public class Alarm {
     private int DND_ID_START = 45;
     private int DND_ID_STOP = 46;
 
+    private int TYPE_ALARM = 30;
+    private int TYPE_DND = 40;
+
     public Alarm(File f) {
         this.f = f;
     }
@@ -64,6 +67,8 @@ public class Alarm {
                             mgr.set(AlarmManager.RTC_WAKEUP, nearestCalendar.getTimeInMillis(), pi);
                         }
                     }
+                }else{
+                    removeAll(t, TYPE_ALARM);
                 }
             }
         } catch (Exception e) {
@@ -104,6 +109,8 @@ public class Alarm {
                 PendingIntent piso = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_START, intentStop, PendingIntent.FLAG_UPDATE_CURRENT);
                 createSilentAlarm(piso, intentStop, mgr, calStop);
             }
+        }else{
+            removeAll(t, TYPE_DND);
         }
     }
 
@@ -119,27 +126,22 @@ public class Alarm {
         }
     }
 
-    public void removeAll(Context t) {
+    private void removeAll(Context t, int type) {
         settings = IO.readSettings(f);
         try {
             ShiftCalendar sc = IO.readShiftCal(f);
             AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
-            int minutes = Integer.parseInt(settings.getSetting(Settings.SET_ALARM_MINUTES));
-            for (int i = 0; i < sc.getCalendarSize(); i++) {
-                WorkDay d = sc.getWdayByIndex(i);
-                Calendar cal = Calendar.getInstance();
-                cal.set(d.getDate().getYear(), d.getDate().getMonth() - 1, d.getDate().getDay(), sc.getShiftById(d.getShift()).getStartTime().getHour(), sc.getShiftById(d.getShift()).getStartTime().getMinute(), 0);
-                cal.add(Calendar.MINUTE, -minutes);
+            if(type == TYPE_ALARM) {
                 Intent intent = new Intent(t, AlarmReceiver.class);
-                intent.putExtra(EXT_SHIFT, sc.getWdayByIndex(i).getShift());
-                PendingIntent pi = PendingIntent.getBroadcast(t, i, intent, 0);
+                PendingIntent pi = PendingIntent.getBroadcast(t, ALARM_ID, intent, 0);
+                mgr.cancel(pi);
+            }else if(type == TYPE_DND) {
+                Intent intent = new Intent(t, DNDReceiver.class);
+                PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_START, intent, PendingIntent.FLAG_ONE_SHOT);
+                mgr.cancel(pi);
+                pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_STOP, intent, PendingIntent.FLAG_ONE_SHOT);
                 mgr.cancel(pi);
             }
-            Intent intent = new Intent(t, DNDReceiver.class);
-            PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_START, intent, PendingIntent.FLAG_ONE_SHOT);
-            mgr.cancel(pi);
-            pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_STOP, intent, PendingIntent.FLAG_ONE_SHOT);
-            mgr.cancel(pi);
         } catch (Exception e) {
             e.printStackTrace();
             settings.setSetting(Settings.SET_ALARM_MINUTES, "0");
