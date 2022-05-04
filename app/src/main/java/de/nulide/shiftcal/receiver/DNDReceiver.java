@@ -25,7 +25,6 @@ public class DNDReceiver extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onReceive(Context context, Intent intent) {
-        ShiftCalendar sc = IO.readShiftCal(context.getFilesDir());
         Alarm alarm = new Alarm(context.getFilesDir());
         Bundle bundle = intent.getExtras();
         int SS = bundle.getInt(DND_START_STOP);
