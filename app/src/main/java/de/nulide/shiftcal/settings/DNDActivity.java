@@ -75,15 +75,14 @@ public class DNDActivity extends AppCompatActivity implements CompoundButton.OnC
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if(buttonView == swDND) {
-            settings.setSetting(Settings.SET_DND, new Boolean(isChecked).toString());
-            IO.writeSettings(getFilesDir(), this, settings);
             if (isChecked) {
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 if (!mNotificationManager.isNotificationPolicyAccessGranted()) {
                     Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
                     startActivity(intent);
                 }else{
-                    alarm.setDNDAlarm(this);
+                    settings.setSetting(Settings.SET_DND, new Boolean(isChecked).toString());
+                    IO.writeSettings(getFilesDir(), this, settings);
                 }
             }
         }

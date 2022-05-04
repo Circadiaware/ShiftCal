@@ -240,7 +240,10 @@ public class ShiftCalendar {
             if (date.isSameDay(now)) {
                 Shift shift = getShiftById(wday.getShift());
                 CDateTime sdateTime = TimeFactory.combineCDateTimeWithShiftTime(date, shift.getStartTime());
-                CDateTime edateTime = TimeFactory.combineCDateTimeWithShiftTime(date, shift.getStartTime());
+                CDateTime edateTime = TimeFactory.combineCDateTimeWithShiftTime(date, shift.getEndTime());
+                if(shift.getStartTime().getHour() > shift.getEndTime().getHour()){
+                    edateTime.addDay(1);
+                }
                 if (now.newerThan(sdateTime) && edateTime.newerThan(now)) {
                     return wday;
                 }

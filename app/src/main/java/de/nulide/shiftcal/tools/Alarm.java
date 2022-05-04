@@ -11,6 +11,7 @@ import java.util.Calendar;
 
 import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
+import de.nulide.shiftcal.logic.object.Shift;
 import de.nulide.shiftcal.logic.object.ShiftCalendar;
 import de.nulide.shiftcal.logic.object.TimeFactory;
 import de.nulide.shiftcal.logic.object.WorkDay;
@@ -90,11 +91,16 @@ public class Alarm {
                         return;
                     }
                 }
+                Shift shiftTDND = sc.getShiftById(toDND.getShift());
                 Calendar calStart = Calendar.getInstance();
-                calStart.set(toDND.getDate().getYear(), toDND.getDate().getMonth() - 1, toDND.getDate().getDay(), sc.getShiftById(toDND.getShift()).getStartTime().getHour(), sc.getShiftById(toDND.getShift()).getStartTime().getMinute(), 0);
+                calStart.set(toDND.getDate().getYear(), toDND.getDate().getMonth() - 1, toDND.getDate().getDay(), shiftTDND.getStartTime().getHour(), shiftTDND.getStartTime().getMinute(), 0);
 
                 Calendar calStop = Calendar.getInstance();
-                calStop.set(toDND.getDate().getYear(), toDND.getDate().getMonth() - 1, toDND.getDate().getDay(), sc.getShiftById(toDND.getShift()).getEndTime().getHour(), sc.getShiftById(toDND.getShift()).getEndTime().getMinute(), 0);
+                calStop.set(toDND.getDate().getYear(), toDND.getDate().getMonth() - 1, toDND.getDate().getDay(), shiftTDND.getEndTime().getHour(), shiftTDND.getEndTime().getMinute(), 0);
+
+                if(shiftTDND.getStartTime().getHour() > shiftTDND.getEndTime().getHour()){
+                    calStop.add(Calendar.DAY_OF_MONTH, 1);
+                }
 
                 AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
 
@@ -105,11 +111,11 @@ public class Alarm {
 
                 Intent intentStop = new Intent(t, DNDReceiver.class);
                 intentStop.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.STOP);
-                PendingIntent piso = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_START, intentStop, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent piso = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID_STOP, intentStop, PendingIntent.FLAG_UPDATE_CURRENT);
                 createSilentAlarm(piso, intentStop, mgr, calStop);
+            }else{
+                removeAll(t, TYPE_DND);
             }
-        }else{
-            removeAll(t, TYPE_DND);
         }
     }
 
