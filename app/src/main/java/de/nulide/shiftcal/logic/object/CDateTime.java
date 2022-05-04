@@ -97,14 +97,13 @@ public class CDateTime {
                         if (this.day > toCheck.day) {
                             return true;
                         } else {
-                            if (this.hour > toCheck.hour) {
-                                return true;
-                            } else {
-                                if (this.hour == toCheck.hour) {
-                                    if (this.minute > toCheck.minute) {
-                                        return true;
+                            if (this.day == toCheck.day) {
+                                if (this.hour > toCheck.hour) {
+                                    return true;
+                                } else {
+                                    if (this.hour == toCheck.hour) {
+                                        return this.minute > toCheck.minute;
                                     }
-                                    return false;
                                 }
                             }
                         }

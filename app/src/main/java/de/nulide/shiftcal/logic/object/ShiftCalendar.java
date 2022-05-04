@@ -222,7 +222,7 @@ public class ShiftCalendar {
                     } else {
                         Shift nshift = getShiftById(nearest.getShift());
                         CDateTime nDate = TimeFactory.combineCDateTimeWithShiftTime(TimeFactory.convertCalendarDateToCDateTime(nearest.getDate()), nshift.getStartTime());
-                        nDate.addMinute(preMinutes);
+                        nDate.addMinute(-preMinutes);
                         if (nDate.newerThan(dateTime)) {
                             nearest = wday;
                         }
