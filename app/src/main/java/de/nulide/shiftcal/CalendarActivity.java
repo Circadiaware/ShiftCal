@@ -48,6 +48,7 @@ import de.nulide.shiftcal.logic.object.WorkDay;
 import de.nulide.shiftcal.settings.SettingsActivity;
 import de.nulide.shiftcal.settings.ThemeActivity;
 import de.nulide.shiftcal.sync.SyncHandler;
+import de.nulide.shiftcal.tools.Alarm;
 import de.nulide.shiftcal.tools.ColorHelper;
 import de.nulide.shiftcal.ui.DarkModeDecorator;
 import de.nulide.shiftcal.ui.ShiftAdapter;
@@ -179,6 +180,10 @@ public class CalendarActivity extends AppCompatActivity implements View.OnClickL
         sc = IO.readShiftCal(getFilesDir());
         updateCalendar();
         updateTextView();
+
+        Alarm alarm = new Alarm(getFilesDir());
+        alarm.setAlarm(this);
+        alarm.setDNDAlarm(this);
     }
 
     public void updateCalendar() {
