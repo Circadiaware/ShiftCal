@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ABOUT"
+            android:textAlignment="center"
+            android:textSize="32dp" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ShiftCal is an application to manage your shifts.\nIt's developed by myself and i have to work with shifts, cause i work as a nurse. So i optimized the application by my needs. I hope that it will help you in your daily business.\n\n -Nulide"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/buttonSourceCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SourceCode" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,34 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".settings.AboutActivity">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-
-        <TextView
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ABOUT"
-            android:textAlignment="center"
-            android:textSize="32dp" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ShiftCal is an application to manage your shifts.\nIt's developed by myself and i have to work with shifts, cause i work as a nurse. So i optimized the application by my needs. I hope that it will help you in your daily business.\n\n -Nulide"
-            android:textSize="18dp" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <Button
-            android:id="@+id/buttonSourceCode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SourceCode" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <include layout="@layout/content_about"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
