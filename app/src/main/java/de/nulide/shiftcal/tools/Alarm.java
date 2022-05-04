@@ -77,27 +77,20 @@ public class Alarm {
             if(new Boolean(settings.getSetting(Settings.SET_DND))) {
                 ShiftCalendar sc = IO.readShiftCal(f);
                 Calendar today = Calendar.getInstance();
-                WorkDay running = sc.getRunningShift(TimeFactory.convertCalendarToCDateTime(today));
+                WorkDay toDND = sc.getRunningShift(TimeFactory.convertCalendarToCDateTime(today));
                 Intent intent = new Intent(t, DNDReceiver.class);
                 AlarmManager mgr = (AlarmManager) t.getSystemService(Context.ALARM_SERVICE);
 
-                if (running == null) {
-                    WorkDay nearest = sc.getUpcomingShift(TimeFactory.convertCalendarToCDateTime(today), false, 0);
-                    if (nearest == null) {
+                if (toDND == null) {
+                    toDND = sc.getUpcomingShift(TimeFactory.convertCalendarToCDateTime(today), false, 0);
+                    if (toDND == null) {
                         return;
-                    } else {
-                        Calendar nearestCal = Calendar.getInstance();
-                        nearestCal.set(running.getDate().getYear(), running.getDate().getMonth() - 1, running.getDate().getDay(), sc.getShiftById(running.getShift()).getStartTime().getHour(), sc.getShiftById(running.getShift()).getStartTime().getMinute(), 0);
-
-                        intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.START);
-                        PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        createSilentAlarm(pi, intent, mgr, nearestCal);
                     }
                 } else {
                     Calendar runningCal = Calendar.getInstance();
-                    runningCal.set(running.getDate().getYear(), running.getDate().getMonth() - 1, running.getDate().getDay(), sc.getShiftById(running.getShift()).getEndTime().getHour(), sc.getShiftById(running.getShift()).getEndTime().getMinute() + 1, 0);
+                    runningCal.set(toDND.getDate().getYear(), toDND.getDate().getMonth() - 1, toDND.getDate().getDay(), sc.getShiftById(toDND.getShift()).getEndTime().getHour(), sc.getShiftById(toDND.getShift()).getEndTime().getMinute() + 1, 0);
 
-                    intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.STOP);
+                    intent.putExtra(DNDReceiver.DND_START_STOP, DNDReceiver.START);
                     PendingIntent pi = PendingIntent.getBroadcast(t, DNDReceiver.DND_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     createSilentAlarm(pi, intent, mgr, runningCal);
                 }

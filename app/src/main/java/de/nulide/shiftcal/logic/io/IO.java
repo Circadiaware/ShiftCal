@@ -90,6 +90,7 @@ public class IO {
         }
 
         alarm.setAlarm(c);
+        alarm.setDNDAlarm(c);
     }
 
     public static Settings readSettings(File dir) {

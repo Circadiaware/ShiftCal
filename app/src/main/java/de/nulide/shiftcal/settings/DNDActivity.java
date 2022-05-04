@@ -83,7 +83,7 @@ public class DNDActivity extends AppCompatActivity implements CompoundButton.OnC
                     Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
                     startActivity(intent);
                 }else{
-                    alarm.setAlarm(this);
+                    alarm.setDNDAlarm(this);
                 }
             }
         }
