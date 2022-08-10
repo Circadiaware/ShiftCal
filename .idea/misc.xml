@@ -6,10 +6,13 @@
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/activity_alarm.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/activity_calendar.xml" value="0.21666666666666667" />
+        <entry key="app/src/main/res/layout/activity_theme.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/content_about.xml" value="0.21666666666666667" />
         <entry key="app/src/main/res/layout/content_alarm.xml" value="0.13020833333333334" />
         <entry key="app/src/main/res/layout/content_calendar.xml" value="0.13020833333333334" />
         <entry key="app/src/main/res/layout/content_calendar_sync.xml" value="0.13020833333333334" />
+        <entry key="app/src/main/res/layout/content_d_n_d.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/layout/content_theme.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/dialog_shift_selector.xml" value="0.18229166666666666" />
         <entry key="app/src/main/res/menu/menu_calendar.xml" value="0.18229166666666666" />
       </map>

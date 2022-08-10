@@ -48,12 +48,8 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
         setContentView(R.layout.activity_executed_alarm);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        int color = getResources().getColor(R.color.colorPrimary);
         Settings settings  = IO.readSettings(getFilesDir());
-        if(settings.isAvailable(Settings.SET_COLOR)){
-            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
-        }
-        ColorHelper.changeActivityColors(this, color);
+        int color = ColorHelper.changeActivityColors(this, toolbar, settings);
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.screenBrightness = 1;
         getWindow().setAttributes(params);
@@ -85,14 +81,13 @@ public class ExecutedAlarmActivity extends AppCompatActivity implements View.OnC
         Uri uri = Uri.parse(settings.getSetting(Settings.SET_ALARM_TONE));
         ringtone = RingtoneManager.getRingtone(this, uri);
         ringtone.setStreamType(RingtoneManager.TYPE_ALARM);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-           AudioAttributes aa = new AudioAttributes.Builder()
+        AudioAttributes aa = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_ALARM)
                     .setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
                     .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
                     .build();
             ringtone.setAudioAttributes(aa);
-        }
+
         ringtone.play();
     }
 

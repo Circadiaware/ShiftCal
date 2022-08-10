@@ -4,12 +4,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -28,12 +31,12 @@ import de.nulide.shiftcal.logic.io.IO;
 import de.nulide.shiftcal.logic.object.Settings;
 import de.nulide.shiftcal.tools.ColorHelper;
 
-public class ThemeActivity extends AppCompatActivity implements View.OnClickListener, ColorPickerClickListener, AdapterView.OnItemSelectedListener {
+public class ThemeActivity extends AppCompatActivity implements View.OnClickListener, ColorPickerClickListener, AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
     public final static int DARK_MODE_OFF = 0;
     public final static int DARK_MODE_ON = 1;
-    public final static int DARK_MODE_AUTO = 2;
 
+    private Switch swMaterialYou;
     private Spinner sDarkMode;
     private Spinner sFirstDayOfWeek;
     private Button btnAppColor;
@@ -46,11 +49,20 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        int color = getResources().getColor(R.color.colorPrimary);
         settings  = IO.readSettings(getFilesDir());
-        if(settings.isAvailable(Settings.SET_COLOR)){
-            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
+        int color = ColorHelper.changeActivityColors(this, toolbar, settings);
+
+
+        swMaterialYou = findViewById(R.id.swMaterialColor);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            swMaterialYou.setEnabled(false);
+        }else{
+            if(settings.isAvailable(Settings.SET_MATERIALYOUCOLOR)){
+                swMaterialYou.setChecked(Boolean.getBoolean(settings.getSetting(Settings.SET_MATERIALYOUCOLOR)));
+            }
+            swMaterialYou.setOnCheckedChangeListener(this);
         }
+
 
         sDarkMode = findViewById(R.id.sDarkMode);
         ArrayAdapter<String> adapterDarkMode;
@@ -138,7 +150,6 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
         }else{
             btnAppColor.setTextColor(Color.WHITE);
         }
-        ColorHelper.changeActivityColors(this, color);
     }
 
     public static void setDarkMode(int i){
@@ -183,5 +194,14 @@ public class ThemeActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        settings.setSetting(Settings.SET_MATERIALYOUCOLOR, ((Boolean)b).toString());
+        IO.writeSettings(getFilesDir(), this, settings);
+        finish();
+        Intent home = new Intent(this, CalendarActivity.class);
+        startActivity(home);
     }
 }

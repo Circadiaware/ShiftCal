@@ -49,12 +49,8 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        int color = getResources().getColor(R.color.colorPrimary);
         Settings settings  = IO.readSettings(getFilesDir());
-        if(settings.isAvailable(Settings.SET_COLOR)){
-            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
-        }
-        ColorHelper.changeActivityColors(this, color);
+        int color = ColorHelper.changeActivityColors(this, toolbar, settings);
 
 
         settingsList = findViewById(R.id.settingslist);

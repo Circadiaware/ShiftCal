@@ -55,18 +55,11 @@ public class Alarm {
                     Intent intent = new Intent(t, AlarmReceiver.class);
                     intent.putExtra(EXT_SHIFT, nearest.getShift());
                     PendingIntent pi = PendingIntent.getBroadcast(t, ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        AlarmManager.AlarmClockInfo ac =
-                                new AlarmManager.AlarmClockInfo(nearestCalendar.getTimeInMillis(),
+                    AlarmManager.AlarmClockInfo ac =
+                            new AlarmManager.AlarmClockInfo(nearestCalendar.getTimeInMillis(),
                                         pi);
-                        mgr.setAlarmClock(ac, pi);
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            mgr.setExact(AlarmManager.RTC_WAKEUP, nearestCalendar.getTimeInMillis(), pi);
-                        } else {
-                            mgr.set(AlarmManager.RTC_WAKEUP, nearestCalendar.getTimeInMillis(), pi);
-                        }
-                    }
+                    mgr.setAlarmClock(ac, pi);
+
                 }else{
                     removeAll(t, TYPE_ALARM);
                 }
@@ -123,11 +116,7 @@ public class Alarm {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, date.getTimeInMillis(), pi);
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 mgr.setExact(AlarmManager.RTC_WAKEUP, date.getTimeInMillis(), pi);
-            } else {
-                mgr.set(AlarmManager.RTC_WAKEUP, date.getTimeInMillis(), pi);
-            }
         }
     }
 

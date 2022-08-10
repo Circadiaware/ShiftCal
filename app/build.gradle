@@ -5,10 +5,10 @@ android {
     buildToolsVersion "32.0.0"
     defaultConfig {
         applicationId "de.nulide.shiftcal"
-        minSdkVersion 20
-        targetSdkVersion 30
-        versionCode 15
-        versionName "1.9"
+        minSdkVersion 21
+        targetSdkVersion 31
+        versionCode 16
+        versionName "1.9.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.debug
@@ -30,7 +30,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.6.1'
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.3.0'
     implementation 'com.github.niwattep:material-slide-date-picker:v2.0.0'

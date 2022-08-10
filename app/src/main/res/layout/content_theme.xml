@@ -17,12 +17,26 @@
             android:layout_height="wrap_content"
             android:layout_margin="1mm"
             android:layout_weight="1"
+            android:text="Material You Coloring:" />
+
+
+        <Switch
+            android:id="@+id/swMaterialColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="1mm"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="1mm"
+            android:layout_weight="1"
             android:text="Dark Mode:" />
 
 
         <Spinner
             android:id="@+id/sDarkMode"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="1mm"
             android:layout_weight="1"
@@ -54,7 +68,7 @@
 
         <Spinner
             android:id="@+id/sFirstDayOfWeek"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="1mm"
             android:layout_weight="1"

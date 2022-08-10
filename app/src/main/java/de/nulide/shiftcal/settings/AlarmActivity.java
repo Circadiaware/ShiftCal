@@ -41,12 +41,8 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
         setContentView(R.layout.activity_alarm);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        int color = getResources().getColor(R.color.colorPrimary);
         settings  = IO.readSettings(getFilesDir());
-        if(settings.isAvailable(Settings.SET_COLOR)){
-            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
-        }
-        ColorHelper.changeActivityColors(this, color);
+        int color = ColorHelper.changeActivityColors(this, toolbar, settings);
         alarm = new Alarm(getFilesDir());
 
         switchAlarm = findViewById(R.id.switchAlarm);
@@ -111,6 +107,7 @@ public class AlarmActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+        super.onActivityResult(requestCode,resultCode,intent);
         if (resultCode == Activity.RESULT_OK && requestCode == 5) {
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             settings.setSetting(Settings.SET_ALARM_TONE, uri.toString());

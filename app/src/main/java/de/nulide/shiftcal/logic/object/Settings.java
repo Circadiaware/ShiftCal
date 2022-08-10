@@ -13,6 +13,7 @@ public class Settings {
     public static final String SET_DND = "DND";
     public static final String SET_START_OF_WEEK = "START_OF_WEEK";
     public static final String SET_SYNC = "SYNC";
+    public static final String SET_MATERIALYOUCOLOR = "MYOUCOLOR";
 
 
     private HashMap<String, String> settings;

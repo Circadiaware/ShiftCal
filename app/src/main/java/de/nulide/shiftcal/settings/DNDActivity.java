@@ -31,12 +31,8 @@ public class DNDActivity extends AppCompatActivity implements CompoundButton.OnC
         setContentView(R.layout.activity_d_n_d);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        int color = getResources().getColor(R.color.colorPrimary);
         settings  = IO.readSettings(getFilesDir());
-        if(settings.isAvailable(Settings.SET_COLOR)){
-            color = Integer.parseInt(settings.getSetting(Settings.SET_COLOR));
-        }
-        ColorHelper.changeActivityColors(this, color);
+        int color = ColorHelper.changeActivityColors(this, toolbar, settings);
 
         alarm = new Alarm(getFilesDir());
 
